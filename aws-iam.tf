@@ -82,7 +82,7 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
             ],
             "Resource": [
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_countries",
+                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_counties",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_states"
             ]
         }
@@ -150,7 +150,7 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:catalog",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:database/*",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_countries",
+                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_counties",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_states",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromjson",
                 "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromcsv"
