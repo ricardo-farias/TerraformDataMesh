@@ -143,7 +143,7 @@ resource "aws_main_route_table_association" "a" {
 resource "aws_emr_cluster" "data-mesh-cluster" {
   name          = "Data Mesh Cluster"
   release_label = "emr-5.30.0"
-  applications  = ["Spark"]
+  applications  = ["Spark", "Zeppelin", "JupyterHub"]
 
 
   termination_protection            = false

@@ -312,8 +312,6 @@ EOF
 
 
 output "output" {
-  value = [
-    aws_emr_cluster.data-mesh-cluster.id
-  ]
+  value = aws_emr_cluster.data-mesh-cluster.master_public_dns
 }
 
