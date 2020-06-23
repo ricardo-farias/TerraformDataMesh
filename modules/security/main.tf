@@ -71,7 +71,7 @@ resource "aws_security_group" "emr-security-group-master" {
   depends_on = [aws_subnet.emr-subnet]
 
   lifecycle {
-    ignore_changes = [ingress, egress]
+    create_before_destroy = true
   }
 }
 
@@ -92,7 +92,7 @@ resource "aws_security_group" "emr-security-group-slave" {
   depends_on = [aws_subnet.emr-subnet]
 
   lifecycle {
-    ignore_changes = [ingress, egress]
+    create_before_destroy = true
   }
 }
 
