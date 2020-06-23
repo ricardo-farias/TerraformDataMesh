@@ -15,8 +15,8 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.athena-data-mesh-output-bucket.bucket}/*",
-                "arn:aws:s3:::${aws_s3_bucket.covid-bucket.bucket}/covid-italy/*"
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*"
             ]
         },
         {
@@ -54,12 +54,12 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
                 "glue:BatchGetPartition"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:catalog",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:database/*",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid19_italy_province",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid19_italy_region",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromjson",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromcsv"
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
             ]
         },
         {
@@ -81,9 +81,9 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
                 "athena:StopQueryExecution"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_counties",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_states"
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states"
             ]
         }
     ]
@@ -108,8 +108,8 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.athena-data-mesh-output-bucket.bucket}/*",
-                "arn:aws:s3:::${aws_s3_bucket.covid-bucket.bucket}/covid-us/*"
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*"
             ]
         },
         {
@@ -147,13 +147,13 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
                 "glue:BatchGetPartition"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:catalog",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:database/*",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_counties",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid_us_states",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromjson",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/testdatafromcsv"
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
             ]
         },
         {
@@ -175,8 +175,8 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
                 "athena:StopQueryExecution"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid19_italy_province",
-                "arn:aws:glue:us-east-2:${aws_glue_catalog_database.aws_glue_catalog_database.catalog_id}:table/${aws_glue_catalog_database.aws_glue_catalog_database.name}/covid19_italy_region"
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region"
             ]
         }
     ]
@@ -309,9 +309,3 @@ resource "aws_iam_role_policy" "iam_emr_instance-profile_policy" {
 }
 EOF
 }
-
-
-output "output" {
-  value = aws_emr_cluster.data-mesh-cluster.master_public_dns
-}
-
