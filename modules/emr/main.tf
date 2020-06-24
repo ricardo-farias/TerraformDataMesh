@@ -30,6 +30,32 @@ resource "aws_emr_cluster" "data-mesh-cluster" {
 
   log_uri = "s3://${var.logging_bucket}"
 
+  step {
+    name              = "Copy credentials file from s3."
+    action_on_failure = "CONTINUE"
+    hadoop_jar_step {
+      jar  = "command-runner.jar"
+      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/credentials", "/home/hadoop/.aws/"]
+    }
+  }
+  step {
+    name              = "Downloading spark app jar"
+    action_on_failure = "CONTINUE"
+    hadoop_jar_step {
+      jar  = "command-runner.jar"
+      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar", "/home/hadoop/"]
+    }
+  }
+  step {
+    name              = "Submit spark job to emr"
+    action_on_failure = "CONTINUE"
+    hadoop_jar_step {
+      jar = "command-runner.jar"
+      args = ["spark-submit", "--class", "com.ricardo.farias.App", "/home/hadoop/SparkPractice-assembly-0.1.jar"]
+    }
+  }
+
+
 
   service_role = var.emr_service_role
 }

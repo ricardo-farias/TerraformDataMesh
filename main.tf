@@ -1,16 +1,22 @@
 module "data-bucket" {
   source = "./modules/s3"
   bucket_name = var.data_bucket_name
+
+  force_destroy = false
 }
 
 module "logging-bucket" {
   source = "./modules/s3"
   bucket_name = var.logging_bucket_name
+
+  force_destroy = true
 }
 
 module "athena-bucket" {
   source = "./modules/s3"
   bucket_name = var.athena_bucket_name
+
+  force_destroy = false
 }
 
 module "glue" {
