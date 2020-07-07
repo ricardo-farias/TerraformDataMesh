@@ -5,3 +5,7 @@ terraform.tfstate.backup
 .terraform.tfstate.lock.info
 crash.log
 .DS_Store
+*.pem
+/__pycache__/
+*.pyc
+/airflow/dags/__pycache__/
