@@ -1,7 +1,6 @@
 .idea
 .terraform
 terraform.tfstate
-terraform.tfstate.backup
 .terraform.tfstate.lock.info
 crash.log
 .DS_Store
@@ -9,3 +8,4 @@ crash.log
 /__pycache__/
 *.pyc
 /airflow/dags/__pycache__/
+*.backup
