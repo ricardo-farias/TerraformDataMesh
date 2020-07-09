@@ -1,92 +1,74 @@
-import boto3
 from airflow import DAG
-from airflow.models import Variable
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
-
-connection = boto3.client(
-    'emr',
-    region_name='us-east-2',
-    aws_access_key_id=Variable.get("aws_access_key_id"),
-    aws_secret_access_key=Variable.get("aws_secret_access_key"),
-)
-
-
-def create_cluster_job_execution(ds, **kwargs):
-    clusterid = connection.run_job_flow(
-        Name='Data Mesh Cluster',
-        ReleaseLabel='emr-5.30.0',
-        LogUri='s3://emr-data-mesh-logging-bucket',
-        Applications=[
-            {
-                'Name': 'Spark'
-            },
-        ],
-        Instances={
-            'InstanceGroups': [
-                {
-                    'Name': "Master nodes",
-                    'Market': 'ON_DEMAND',
-                    'InstanceRole': 'MASTER',
-                    'InstanceType': 'm5.xlarge',
-                    'InstanceCount': 1,
-                },
-                {
-                    'Name': "Slave nodes",
-                    'Market': 'ON_DEMAND',
-                    'InstanceRole': 'CORE',
-                    'InstanceType': 'm5.xlarge',
-                    'InstanceCount': 1,
-                }
-            ],
-            'Ec2KeyName': 'EMR-key-pair',
-            'EmrManagedMasterSecurityGroup': "sg-0980c1d5ea0ca94b4",
-            'EmrManagedSlaveSecurityGroup': "sg-059482066120cd855",
-            'KeepJobFlowAliveWhenNoSteps': False,
-            'TerminationProtected': False,
-            'Ec2SubnetId': 'subnet-05f42e2723bcdeda1',
-        },
-        Steps=[
-            {
-                'Name': 'file-copy-step',
-                'ActionOnFailure': 'CONTINUE',
-                'HadoopJarStep': {
-                    'Jar': 'command-runner.jar',
-                    'Args': ['aws', 's3', 'cp', 's3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar',
-                             "/home/hadoop/"]
-                }
-            },
-            {
-                "Name": 'copy-credentials',
-                'ActionOnFailure': 'CONTINUE',
-                'HadoopJarStep': {
-                    'Jar': "command-runner.jar",
-                    'Args': ["aws", "s3", "cp", "s3://emr-configuration-scripts/credentials", "/home/hadoop/.aws/"],
-                }
-            },
-            {
-                'Name': 'spark-submit',
-                'ActionOnFailure': 'CONTINUE',
-                'HadoopJarStep': {
-                    'Jar': 'command-runner.jar',
-                    'Args': ['spark-submit', '--class', 'com.ricardo.farias.App',
-                             '/home/hadoop/SparkPractice-assembly-0.1.jar']
-                }
-            }
-        ],
-        VisibleToAllUsers=True,
-        ServiceRole='iam_emr_service_role',
-        JobFlowRole='emr-instance-profile',
-    )
-
-    print('cluster created with the step...', clusterid['JobFlowId'])
-    return clusterid["JobFlowId"]
-
+from emr import EMR
 
 args = {
     'owner': 'Airflow',
     'start_date': days_ago(2)
 }
+
+
+def create_cluster(**kwargs):
+    cluster_id = EMR.create_cluster_job_execution("Data Mesh Cluster", "emr-5.30.0")
+    return cluster_id
+
+
+def wait_for_cluster(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_cluster')
+    EMR.wait_for_cluster_creation(cluster_id)
+
+
+def get_credentials(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_cluster')
+    step_id = EMR.add_job_step(cluster_id, "Get-Credentials", "command-runner.jar",
+                           ["aws", "s3", "cp", "s3://emr-configuration-scripts/credentials", "/home/hadoop/.aws/"])
+    EMR.wait_for_step_completion(cluster_id, step_id)
+    status = EMR.get_step_status(cluster_id, step_id)
+    if status == "FAILED":
+        print("GET CREDENTIALS FROM S3 FAILED")
+        raise RuntimeError("Get Credentials Failed During Execution: Reason documented in logs probably...?")
+    elif status == "COMPLETED":
+        print("GET CREDENTIALS FROM S3 COMPLETED SUCCESSFULLY")
+
+
+def get_jar(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_cluster')
+    step_id = EMR.add_job_step(cluster_id, "Get-Jars", "command-runner.jar",
+                           ['aws', 's3', 'cp', 's3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar',
+                            "/home/hadoop/"])
+    EMR.wait_for_step_completion(cluster_id, step_id)
+    status = EMR.get_step_status(cluster_id, step_id)
+    if status == "FAILED":
+        print("GET JAR FROM S3 FAILED")
+        raise RuntimeError("Get Jar Failed During Execution: Reason documented in logs probably...?")
+    elif status == "COMPLETED":
+        print("GET JAR FROM S3 COMPLETED SUCCESSFULLY")
+
+
+def spark_submit(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_cluster')
+    step_id = EMR.add_job_step(cluster_id, "Spark-Submit", "command-runner.jar",
+                           ['spark-submit', '--class', 'com.ricardo.farias.App',
+                            "/home/hadoop/SparkPractice-assembly-0.1.jar"])
+    EMR.wait_for_step_completion(cluster_id, step_id)
+    status = EMR.get_step_status(cluster_id, step_id)
+    if status == "FAILED":
+        print("SPARK SUBMIT JOB FAILED")
+        raise RuntimeError("Spark Job Failed During Execution: Reason documented in logs probably...?")
+    elif status == "COMPLETED":
+        print("SPARK SUBMIT JOB COMPLETED SUCCESSFULLY")
+
+
+def terminate_cluster(**kwargs):
+    ti = kwargs['ti']
+    cluster_id = ti.xcom_pull(task_ids='create_cluster')
+    EMR.terminate_cluster(cluster_id)
+
 
 dag = DAG(
     'EMR_Job',
@@ -95,11 +77,51 @@ dag = DAG(
     schedule_interval=None,
 )
 
-emr_job = PythonOperator(
-    task_id="emr_job",
-    python_callable=create_cluster_job_execution,
+create_cluster_task = PythonOperator(
+    task_id="create_cluster",
+    python_callable=create_cluster,
     provide_context=True,
     dag=dag
 )
 
-emr_job
+wait_for_cluster_task = PythonOperator(
+    task_id="wait_for_cluster",
+    python_callable=wait_for_cluster,
+    provide_context=True,
+    dag=dag
+)
+
+get_credentials_task = PythonOperator(
+    task_id="get_credentials",
+    python_callable=get_credentials,
+    provide_context=True,
+    dag=dag
+)
+
+get_jar_task = PythonOperator(
+    task_id="get_jar",
+    python_callable=get_jar,
+    provide_context=True,
+    dag=dag
+)
+
+spark_submit_task = PythonOperator(
+    task_id="spark_submit",
+    python_callable=spark_submit,
+    provide_context=True,
+    dag=dag
+)
+
+terminate_cluster_task = PythonOperator(
+    task_id="terminate_cluster",
+    python_callable=terminate_cluster,
+    provide_context=True,
+    dag=dag
+)
+
+create_cluster_task >> \
+    wait_for_cluster_task >> \
+    get_credentials_task >> \
+    get_jar_task >> \
+    spark_submit_task >> \
+    terminate_cluster_task

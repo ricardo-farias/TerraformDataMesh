@@ -49,14 +49,14 @@ bash = BashOperator(
     dag=dag
 )
 
-submit_job1 = SSHOperator(
-    task_id="Submit",
-    ssh_conn_id="EMR_CONNECTION",
-    app_name="Data Mesh",
-    command="spark-submit --class com.ricardo.farias.App SparkPractice-assembly-0.1.jar",
-    provide_context=True,
-    dag=dag
-)
+# submit_job1 = SSHOperator(
+#     task_id="Submit",
+#     ssh_conn_id="EMR_CONNECTION",
+#     app_name="Data Mesh",
+#     command="spark-submit --class com.ricardo.farias.App SparkPractice-assembly-0.1.jar",
+#     provide_context=True,
+#     dag=dag
+# )
 
 
-bash >> py_operator >> submit_job1
+bash >> py_operator
