@@ -1,4 +1,3 @@
-from airflow_variables import *
 import boto3
 from airflow.models import Variable
 
