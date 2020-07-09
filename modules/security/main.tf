@@ -1,12 +1,18 @@
 resource "aws_vpc" "emr-vpc" {
   cidr_block           = "172.31.0.0/16"
   enable_dns_hostnames = true
+  tags = {
+    name = "emr-vpc"
+  }
 }
 
 // EMR Subnet
 resource "aws_subnet" "emr-subnet" {
   vpc_id     = aws_vpc.emr-vpc.id
   cidr_block = "172.31.0.0/16"
+  tags = {
+    name = "emr-subnet"
+  }
 }
 
 // EMR Security rules
@@ -102,46 +108,46 @@ resource "aws_main_route_table_association" "a" {
   route_table_id = aws_route_table.r.id
 }
 
-//----------------ECS Network/Security Groups------------------
-resource "aws_vpc" "ecs-vpc" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-}
-
-resource "aws_subnet" "ecs-public-subnet" {
-  vpc_id     = aws_vpc.ecs-vpc.id
-  cidr_block = "10.0.0.0/24"
-  tags= {
-    Name = "ECS_Public"
-  }
-}
-
-resource "aws_subnet" "ecs-private-subnet" {
-  vpc_id     = aws_vpc.ecs-vpc.id
-  cidr_block = "10.0.1.0/24"
-  tags= {
-    Name = "ECS_Private"
-  }
-}
-
-resource "aws_route_table" "ecs-public-route-table" {
-  vpc_id = aws_vpc.ecs-vpc.id
-  route {
-    cidr_block = "10.0.0.0/24"
-  }
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.ecs-internet-gateway
-  }
-}
-
-resource "aws_route_table" "ecs-private-route-table" {
-  vpc_id = aws_vpc.ecs-vpc.id
-  route {
-    cidr_block = "10.0.1.0/24"
-  }
-}
-
-resource "aws_internet_gateway" "ecs-internet-gateway" {
-  vpc_id = aws_vpc.ecs-vpc.id
-}
+//----------------ECS Network/Security Groups------------------ UNDER CONSTRUCTION
+//resource "aws_vpc" "ecs-vpc" {
+//  cidr_block           = "10.0.0.0/16"
+//  enable_dns_hostnames = true
+//}
+//
+//resource "aws_subnet" "ecs-public-subnet" {
+//  vpc_id     = aws_vpc.ecs-vpc.id
+//  cidr_block = "10.0.0.0/24"
+//  tags= {
+//    Name = "ECS_Public"
+//  }
+//}
+//
+//resource "aws_subnet" "ecs-private-subnet" {
+//  vpc_id     = aws_vpc.ecs-vpc.id
+//  cidr_block = "10.0.1.0/24"
+//  tags= {
+//    Name = "ECS_Private"
+//  }
+//}
+//
+//resource "aws_route_table" "ecs-public-route-table" {
+//  vpc_id = aws_vpc.ecs-vpc.id
+//  route {
+//    cidr_block = "10.0.0.0/24"
+//  }
+//  route {
+//    cidr_block = "0.0.0.0/0"
+//    gateway_id = aws_internet_gateway.ecs-internet-gateway
+//  }
+//}
+//
+//resource "aws_route_table" "ecs-private-route-table" {
+//  vpc_id = aws_vpc.ecs-vpc.id
+//  route {
+//    cidr_block = "10.0.1.0/24"
+//  }
+//}
+//
+//resource "aws_internet_gateway" "ecs-internet-gateway" {
+//  vpc_id = aws_vpc.ecs-vpc.id
+//}
