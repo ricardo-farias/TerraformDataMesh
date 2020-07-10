@@ -321,7 +321,7 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "Service": "elasticcontainerservice.amazonaws.com"
+        "Service": "ecs-tasks.amazonaws.com"
       },
       "Action": "sts:AssumeRole"
     }
@@ -361,24 +361,6 @@ resource "aws_iam_role_policy" "ecs-task-execution-policy" {
                 "ec2messages:*"
             ],
             "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "iam:CreateServiceLinkedRole",
-            "Resource": "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM*",
-            "Condition": {
-                "StringLike": {
-                    "iam:AWSServiceName": "ssm.amazonaws.com"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:DeleteServiceLinkedRole",
-                "iam:GetServiceLinkedRoleDeletionStatus"
-            ],
-            "Resource": "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM*"
         },
         {
             "Effect": "Allow",

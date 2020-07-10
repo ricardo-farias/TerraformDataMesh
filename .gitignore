@@ -9,3 +9,4 @@ crash.log
 *.pyc
 /airflow/dags/__pycache__/
 *.backup
+fernet.txt

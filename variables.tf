@@ -15,3 +15,4 @@ variable "database_name" {}
 variable "athena_bucket_name" {}
 variable "data_bucket_name" {}
 variable "logging_bucket_name" {}
+variable "cluster_name" {}

@@ -28,12 +28,60 @@ module "security" {
   source = "./modules/security"
 }
 
+module "ecr" {
+  source = "./modules/ecr"
+  name = "airflow"
+}
+
 module "iam" {
   source = "./modules/iam"
   athena_bucket_name = module.athena-bucket.bucket_name
   data_bucket_name = module.data-bucket.bucket_name
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
+}
+
+resource "aws_ecs_cluster" "airflow" {
+  name = var.cluster_name
+}
+
+module "load_balancer" {
+  source = "./modules/load-balancer"
+  internal = ""
+  listener_port = "8080"
+  listener_protocol = "HTTP"
+  listener_type = ""
+  load_balancer_name = "airflow-load-balancer"
+  load_balancer_type = "Application"
+  security_groups = []
+  subnets = []
+  target_group_name = "airflow-webserver"
+  target_group_port = "8080"
+  target_group_protocol = "HTTP"
+  target_group_vpc = module.security.vpc_id
+}
+
+
+module "ecs-Redis" {
+  source = "./modules/ecs"
+  command = "webserver"
+  cpu = "1024"
+  family_name = "Airflow-Redis"
+  fernet_key = file("fernet.txt")
+  hostPort = "6379"
+  image = module.ecr.airflow-ecr-repo-url
+  memory = "2048"
+  network_mode = "awsvpc"
+  redis_host = ""
+  requires_compatibilities = []
+  task_execution_arn = ""
+  assign_public_ip = "true"
+  cluster_id = aws_ecs_cluster.airflow.id
+  desired_count = ""
+  launch_type = "FARGATE"
+  security_groups = []
+  service_name = "Airflow-Redis"
+  subnets = []
 }
 
 //module "emr" {

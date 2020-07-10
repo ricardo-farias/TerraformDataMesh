@@ -1,7 +1,3 @@
-resource "aws_ecs_cluster" "airflow" {
-  name = "airflow"
-}
-
 resource "aws_ecs_task_definition" "ecs-task" {
   container_definitions = <<TASK_DEFINITION
 [
@@ -100,4 +96,23 @@ TASK_DEFINITION
   cpu = var.cpu
   memory = var.memory
   requires_compatibilities = var.requires_compatibilities
+}
+
+resource "aws_ecs_service" "ecs-service" {
+  name = var.service_name
+  task_definition = aws_ecs_task_definition.ecs-task.arn
+  cluster = var.cluster_id
+  desired_count = var.desired_count
+  launch_type = var.launch_type
+
+  load_balancer {
+    container_name = ""
+    container_port = 0
+  }
+
+  network_configuration {
+    subnets = var.subnets
+    security_groups = var.security_groups
+    assign_public_ip = var.assign_public_ip
+  }
 }
