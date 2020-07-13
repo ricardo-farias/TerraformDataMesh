@@ -10,6 +10,10 @@
 //  value = module.emr.master_public_dns
 //}
 
-output "emr_subnet_id" {
-  value = module.security.subnet_id
+output "public_subnet-1" {
+  value = module.security.public_subnet_1_id
+}
+
+output "public_subnet-2" {
+  value = module.security.public_subnet_2_id
 }

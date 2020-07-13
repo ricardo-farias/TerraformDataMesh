@@ -6,6 +6,10 @@ output "load_balancer_id" {
   value = aws_lb.load-balancer.id
 }
 
+output "load_balancer_name" {
+  value = aws_lb.load-balancer.name
+}
+
 output "load_balancer_dns" {
   value = aws_lb.load-balancer.dns_name
 }
@@ -25,3 +29,4 @@ output "target_group_id" {
 output "target_group_arn" {
   value = aws_lb_target_group.target-group.arn
 }
+

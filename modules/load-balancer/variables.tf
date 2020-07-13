@@ -1,5 +1,7 @@
 variable "load_balancer_name" {}
-variable "internal" {}
+variable "internal" {
+  type = bool
+}
 variable "load_balancer_type" {}
 variable "security_groups" {
   type = list(string)
@@ -14,3 +16,4 @@ variable "target_group_vpc" {}
 variable "listener_port" {}
 variable "listener_protocol" {}
 variable "listener_type" {}
+variable "matcher" {}

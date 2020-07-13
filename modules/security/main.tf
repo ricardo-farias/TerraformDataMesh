@@ -1,17 +1,37 @@
 resource "aws_vpc" "vpc" {
-  cidr_block           = "172.31.0.0/16"
+  cidr_block           = "172.0.0.0/16"
   enable_dns_hostnames = true
   tags = {
-    name = "emr-vpc"
+    name = "vpc"
   }
 }
 
-// EMR Subnet
-resource "aws_subnet" "subnet" {
+// Public Subnet
+resource "aws_subnet" "public-subnet-1" {
   vpc_id     = aws_vpc.vpc.id
-  cidr_block = "172.31.0.0/16"
+  cidr_block = "172.0.0.0/24"
+  availability_zone = "us-east-2a"
   tags = {
-    name = "emr-subnet"
+    name = "public subnet"
+  }
+}
+
+resource "aws_subnet" "public-subnet-2" {
+  vpc_id     = aws_vpc.vpc.id
+  cidr_block = "172.0.1.0/24"
+  availability_zone = "us-east-2b"
+  tags = {
+    name = "public subnet"
+  }
+}
+
+// Private Subnet
+resource "aws_subnet" "private-subnet" {
+  cidr_block = "172.0.2.0/24"
+  vpc_id = aws_vpc.vpc.id
+  availability_zone = "us-east-2c"
+  tags = {
+    name = "private subnet"
   }
 }
 
@@ -69,7 +89,7 @@ resource "aws_security_group" "emr-security-group-master" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  depends_on = [aws_subnet.subnet]
+  depends_on = [aws_subnet.public-subnet-1]
 }
 
 // EMR Security group Slave
@@ -84,7 +104,7 @@ resource "aws_security_group" "emr-security-group-slave" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  depends_on = [aws_subnet.subnet]
+  depends_on = [aws_subnet.public-subnet-1]
 }
 
 // Internet Gateway
@@ -109,3 +129,91 @@ resource "aws_main_route_table_association" "a" {
 }
 
 //----------------ECS Network/Security Groups------------------ UNDER CONSTRUCTION
+resource "aws_security_group" "load-balancer-security-group-master" {
+  name        = "load-balancer-security-group"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    to_port = 8080
+    from_port = 8080
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  depends_on = [aws_subnet.public-subnet-1]
+}
+
+resource "aws_security_group" "webserver-security-group" {
+  name        = "webserver-security-group"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    to_port = 8080
+    from_port = 8080
+    protocol = "tcp"
+    security_groups = [aws_security_group.load-balancer-security-group-master.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  depends_on = [aws_subnet.public-subnet-1]
+}
+
+resource "aws_security_group" "redis_security_group" {
+  name        = "redis-security-group"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    to_port = 6379
+    from_port = 6379
+    protocol = "tcp"
+    security_groups = [aws_security_group.scheduler_security_group.id, aws_security_group.worker_security_group.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  depends_on = [aws_subnet.private-subnet]
+}
+
+resource "aws_security_group" "worker_security_group" {
+  name        = "worker-security-group"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    to_port = 8793
+    from_port = 8793
+    protocol = "tcp"
+    security_groups = [aws_security_group.webserver-security-group.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  depends_on = [aws_subnet.private-subnet]
+}
+
+resource "aws_security_group" "scheduler_security_group" {
+  name        = "scheduler-security-group"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  depends_on = [aws_subnet.private-subnet]
+}

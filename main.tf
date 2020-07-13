@@ -47,42 +47,49 @@ resource "aws_ecs_cluster" "airflow" {
 
 module "load_balancer" {
   source = "./modules/load-balancer"
-  internal = ""
+  internal = false
   listener_port = "8080"
   listener_protocol = "HTTP"
-  listener_type = ""
+  listener_type = "forward"
   load_balancer_name = "airflow-load-balancer"
-  load_balancer_type = "Application"
-  security_groups = []
-  subnets = []
+  load_balancer_type = "application"
+  security_groups = [module.security.load_balancer_security_group_id]
+  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
   target_group_name = "airflow-webserver"
   target_group_port = "8080"
   target_group_protocol = "HTTP"
   target_group_vpc = module.security.vpc_id
+  matcher = "200,302"
 }
 
+module "elastic_cache" {
+  source = "./modules/elastic-cache"
 
-module "ecs-Redis" {
-  source = "./modules/ecs"
-  command = "webserver"
-  cpu = "1024"
-  family_name = "Airflow-Redis"
-  fernet_key = file("fernet.txt")
-  hostPort = "6379"
-  image = module.ecr.airflow-ecr-repo-url
-  memory = "2048"
-  network_mode = "awsvpc"
-  redis_host = ""
-  requires_compatibilities = []
-  task_execution_arn = ""
-  assign_public_ip = "true"
-  cluster_id = aws_ecs_cluster.airflow.id
-  desired_count = ""
-  launch_type = "FARGATE"
-  security_groups = []
-  service_name = "Airflow-Redis"
-  subnets = []
+  instance_type = "cache.t2.micro"
+  project_name = "airflow-redis"
+  security_groups = [module.security.redis_security_group_id]
+  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
 }
+
+//
+//module "ecs" {
+//  source = "./modules/ecs"
+//  cluster_id = module.ecr.airflow-ecr-repo-id
+//  fernet_key = file("fernet.txt")
+//  image = module.ecr.airflow-ecr-repo-url
+//  launch_type = "FARGATE"
+//  load_balancer_name = module.load_balancer.load_balancer_name
+//  network_mode = "awsvpc"
+//  private_subnet = module.security.private_subnet_id
+//  public_subnet = module.security.public_subnet_id
+//  redis_host = "redis.kyh3fa.0001.use2.cache.amazonaws.com"
+//  requires_compatibilities = ["FARGATE"]
+//  task_execution_arn = module.iam.ecs_task_execution_arn
+//  redis_security_group_id = module.security.redis_security_group_id
+//  scheduler_security_group_id = module.security.scheduler_security_group_id
+//  webserver_security_group_id = module.security.webserver_security_group_id
+//  worker_security_group_id = module.security.worker_security_group_id
+//}
 
 //module "emr" {
 //  source = "./modules/emr"

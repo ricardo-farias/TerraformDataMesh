@@ -9,3 +9,7 @@ output "emr_service_role" {
 output "ec2_task_executor_arn" {
   value = aws_iam_role.ecsTaskExecutionRole.arn
 }
+
+output "ecs_task_execution_arn" {
+  value = aws_iam_role.ecsTaskExecutionRole.arn
+}
