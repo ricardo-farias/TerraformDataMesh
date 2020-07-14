@@ -13,7 +13,7 @@ resource "aws_subnet" "public-subnet-1" {
   cidr_block = "172.0.0.0/24"
   availability_zone = "us-east-2a"
   tags = {
-    name = "public subnet"
+    Name = "public subnet 1"
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_subnet" "public-subnet-2" {
   cidr_block = "172.0.1.0/24"
   availability_zone = "us-east-2b"
   tags = {
-    name = "public subnet"
+    Name = "public subnet 2"
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "private-subnet" {
   vpc_id = aws_vpc.vpc.id
   availability_zone = "us-east-2c"
   tags = {
-    name = "private subnet"
+    Name = "private subnet"
   }
 }
 

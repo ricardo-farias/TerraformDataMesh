@@ -12,11 +12,26 @@ class EMR:
     )
 
     @staticmethod
+    def get_security_group_id(group_name):
+        ec2 = boto3.client('ec2', region_name="us-east-2")
+        response = ec2.describe_security_groups(GroupNames=[group_name])
+        return response['SecurityGroups'][0]['GroupId']
+
+    @staticmethod
+    def get_subnet_id(subnet_name):
+        ec2 = boto3.client("ec2", region_name="us-east-2")
+        response = ec2.describe_subnets(Filters=[{'Name': subnet_name}])
+        return response['Subnets'][0]['SubnetId']
+
+    @staticmethod
     def create_cluster_job_execution(name, release,
                                      master_node_type="m5.xlarge",
                                      slave_node_type="m5.xlarge",
                                      master_instance_count=1,
                                      slave_instance_count=1):
+        emr_master_security_group_id = EMR.get_security_group_id('security-group-master')
+        emr_slave_security_group_id = EMR.get_security_group_id('security-group-slave')
+        public_subnet = EMR.get_subnet_id("public subnet 1")
         response = EMR.connection.run_job_flow(
             Name=name,
             ReleaseLabel=release,
@@ -44,11 +59,11 @@ class EMR:
                     }
                 ],
                 'Ec2KeyName': 'EMR-key-pair',
-                'EmrManagedMasterSecurityGroup': "sg-022da502cb4aa1722",
-                'EmrManagedSlaveSecurityGroup': "sg-00921d5d61b9a7b11",
+                'EmrManagedMasterSecurityGroup': emr_master_security_group_id,
+                'EmrManagedSlaveSecurityGroup': emr_slave_security_group_id,
                 'KeepJobFlowAliveWhenNoSteps': True,
                 'TerminationProtected': False,
-                'Ec2SubnetId': 'subnet-0d67fc1e75522aa13',
+                'Ec2SubnetId': public_subnet,
             },
             VisibleToAllUsers=True,
             ServiceRole='iam_emr_service_role',
