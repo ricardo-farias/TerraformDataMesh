@@ -11,8 +11,6 @@ COPY requirements.txt /requirements.txt
 RUN pip install boto3
 RUN pip install --upgrade pip
 
-# COPY EMR-key-pair.pem /usr/local/airflow/.ssh/EMR-key-pair.pem
-# RUN chown -R airflow:airflow /usr/local/airflow/.ssh/EMR-key-pair.pem
 # Add directory in which pip installs to PATH
 ENV PATH="/usr/local/airflow/.local/bin:${PATH}"
 
