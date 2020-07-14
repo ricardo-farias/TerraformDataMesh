@@ -71,25 +71,81 @@ module "elastic_cache" {
   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
 }
 
-//
-//module "ecs" {
-//  source = "./modules/ecs"
-//  cluster_id = module.ecr.airflow-ecr-repo-id
-//  fernet_key = file("fernet.txt")
-//  image = module.ecr.airflow-ecr-repo-url
-//  launch_type = "FARGATE"
-//  load_balancer_name = module.load_balancer.load_balancer_name
-//  network_mode = "awsvpc"
-//  private_subnet = module.security.private_subnet_id
-//  public_subnet = module.security.public_subnet_id
-//  redis_host = "redis.kyh3fa.0001.use2.cache.amazonaws.com"
-//  requires_compatibilities = ["FARGATE"]
-//  task_execution_arn = module.iam.ecs_task_execution_arn
-//  redis_security_group_id = module.security.redis_security_group_id
-//  scheduler_security_group_id = module.security.scheduler_security_group_id
-//  webserver_security_group_id = module.security.webserver_security_group_id
-//  worker_security_group_id = module.security.worker_security_group_id
-//}
+module "rds" {
+  source = "./modules/rds"
+  accessible = true
+  db_engine = "postgres"
+  db_name = "airflow"
+  db_username = "airflow"
+  engine_version = "11.6"
+  instance_type = "db.t2.micro"
+  security_group_ids = [module.security.rds_security_group_id]
+  password = file("rds_password.txt")
+  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id, module.security.private_subnet_id]
+  identifier = "airflow"
+}
+
+module "ssm_rds_host" {
+  source = "./modules/ssm"
+  name = "host"
+  type = "String"
+  value = module.rds.rds_address
+}
+
+module "ssm_rds_username" {
+  source = "./modules/ssm"
+  name = "username"
+  type = "String"
+  value = module.rds.rds_username
+}
+
+module "ssm_rds_engine" {
+  source = "./modules/ssm"
+  name = "engine"
+  type = "String"
+  value = module.rds.engine
+}
+
+module "ssm_rds_port" {
+  source = "./modules/ssm"
+  name = "port"
+  type = "String"
+  value = module.rds.rds_port
+}
+
+module "ssm_rds_password" {
+  source = "./modules/ssm"
+  name = "password"
+  type = "SecureString"
+  value = file("rds_password.txt")
+}
+
+module "ssm_rds_db_identifier" {
+  source = "./modules/ssm"
+  name = "dbInstanceIdentifier"
+  type = "String"
+  value = "postgres"
+}
+
+module "ecs" {
+  source = "./modules/ecs"
+  cluster_id = aws_ecs_cluster.airflow.id
+  fernet_key = file("fernet.txt")
+  image = module.ecr.airflow-ecr-repo-url
+  launch_type = "FARGATE"
+  target_group_arn = module.load_balancer.target_group_arn
+  network_mode = "awsvpc"
+  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
+  redis_host = module.elastic_cache.redis_address
+  requires_compatibilities = ["FARGATE"]
+  task_execution_arn = module.iam.ecs_task_execution_arn
+  redis_security_group_id = module.security.redis_security_group_id
+  scheduler_security_group_id = module.security.scheduler_security_group_id
+  webserver_security_group_id = module.security.webserver_security_group_id
+  worker_security_group_id = module.security.worker_security_group_id
+  elastic_cache = module.load_balancer.load_balancer
+  load_balancer = module.elastic_cache.elastic_cache
+}
 
 //module "emr" {
 //  source = "./modules/emr"

@@ -1,6 +1,7 @@
 resource "aws_vpc" "vpc" {
   cidr_block           = "172.0.0.0/16"
-  enable_dns_hostnames = true
+  enable_dns_support = "true"
+  enable_dns_hostnames  = "true"
   tags = {
     name = "vpc"
   }
@@ -129,7 +130,7 @@ resource "aws_main_route_table_association" "a" {
 }
 
 //----------------ECS Network/Security Groups------------------ UNDER CONSTRUCTION
-resource "aws_security_group" "load-balancer-security-group-master" {
+resource "aws_security_group" "load-balancer-security-group" {
   name        = "load-balancer-security-group"
   description = "Allow inbound traffic"
   vpc_id      = aws_vpc.vpc.id
@@ -156,7 +157,13 @@ resource "aws_security_group" "webserver-security-group" {
     to_port = 8080
     from_port = 8080
     protocol = "tcp"
-    security_groups = [aws_security_group.load-balancer-security-group-master.id]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    to_port = 65535
+    from_port = 0
+    protocol = "tcp"
+    security_groups = [aws_security_group.load-balancer-security-group.id]
   }
   egress {
     from_port   = 0
@@ -216,4 +223,23 @@ resource "aws_security_group" "scheduler_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   depends_on = [aws_subnet.private-subnet]
+}
+
+resource "aws_security_group" "rds_security_group" {
+  name = "rds-security_group"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port = 5432
+    protocol = "tcp"
+    to_port = 5432
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    protocol = "-1"
+    to_port = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }

@@ -30,3 +30,6 @@ output "target_group_arn" {
   value = aws_lb_target_group.target-group.arn
 }
 
+output "load_balancer" {
+  value = aws_lb.load-balancer
+}

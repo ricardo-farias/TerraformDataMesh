@@ -27,11 +27,11 @@ output "private_subnet_id" {
 }
 
 output "load_balancer_security_group_arn" {
-  value = aws_security_group.load-balancer-security-group-master.arn
+  value = aws_security_group.load-balancer-security-group.arn
 }
 
 output "load_balancer_security_group_id" {
-  value = aws_security_group.load-balancer-security-group-master.id
+  value = aws_security_group.load-balancer-security-group.id
 }
 
 output "redis_security_group_id" {
@@ -48,4 +48,8 @@ output "worker_security_group_id" {
 
 output "scheduler_security_group_id" {
   value = aws_security_group.scheduler_security_group.id
+}
+
+output "rds_security_group_id" {
+  value = aws_security_group.rds_security_group.id
 }

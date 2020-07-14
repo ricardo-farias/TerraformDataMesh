@@ -10,3 +10,4 @@ crash.log
 /airflow/dags/__pycache__/
 *.backup
 fernet.txt
+rds_password.txt

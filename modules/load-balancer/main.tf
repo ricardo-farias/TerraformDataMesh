@@ -11,6 +11,7 @@ resource "aws_lb_target_group" "target-group" {
   port     = var.target_group_port
   protocol = var.target_group_protocol
   vpc_id   = var.target_group_vpc
+  target_type = "ip"
   health_check {
     path = "/"
     matcher = var.matcher
