@@ -12,16 +12,40 @@ class EMR:
     )
 
     @staticmethod
-    def get_security_group_id(group_name):
-        ec2 = boto3.client('ec2', region_name="us-east-2")
-        response = ec2.describe_security_groups(GroupNames=[group_name])
-        return response['SecurityGroups'][0]['GroupId']
+    def get_vpc_id():
+        ec2 = boto3.client('ec2', region_name="us-east-2", aws_access_key_id=Variable.get("aws_access_key_id"),
+                           aws_secret_access_key=Variable.get("aws_secret_access_key"))
+        response = ec2.describe_vpcs()
+        vpc_id = response.get('Vpcs', [{}])[0].get('VpcId', '')
+        return vpc_id
 
     @staticmethod
-    def get_subnet_id(subnet_name):
-        ec2 = boto3.client("ec2", region_name="us-east-2")
-        response = ec2.describe_subnets(Filters=[{'Name': subnet_name}])
-        return response['Subnets'][0]['SubnetId']
+    def get_security_group_id(group_name):
+        vpc_id = EMR.get_vpc_id()
+        print(f"VPC FOUND: {vpc_id}")
+        ec2 = boto3.client('ec2', region_name="us-east-2", aws_access_key_id=Variable.get("aws_access_key_id"),
+                           aws_secret_access_key=Variable.get("aws_secret_access_key"))
+        response = ec2.describe_security_groups()
+        result = ''
+        for group in response['SecurityGroups']:
+            print(f"Security Group Found: \n\t\t {group}")
+            if group["GroupName"] == group_name:
+                result = group["GroupId"]
+                break
+        return result
+
+    @staticmethod
+    def get_subnet_id():
+        ec2 = boto3.client("ec2", region_name="us-east-2", aws_access_key_id=Variable.get("aws_access_key_id"),
+                           aws_secret_access_key=Variable.get("aws_secret_access_key"))
+        response = ec2.describe_subnets()
+        print(response)
+        result = ''
+        for subnet in response["Subnets"]:
+            print(subnet)
+            if subnet["AvailabilityZone"] == 'us-east-2a':
+                result = subnet['SubnetId']
+        return result
 
     @staticmethod
     def create_cluster_job_execution(name, release,
@@ -31,7 +55,7 @@ class EMR:
                                      slave_instance_count=1):
         emr_master_security_group_id = EMR.get_security_group_id('security-group-master')
         emr_slave_security_group_id = EMR.get_security_group_id('security-group-slave')
-        public_subnet = EMR.get_subnet_id("public subnet 1")
+        public_subnet = EMR.get_subnet_id()
         response = EMR.connection.run_job_flow(
             Name=name,
             ReleaseLabel=release,
