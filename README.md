@@ -40,3 +40,30 @@ To create the resources inside the plan, run this command:
 ```shell script
 terraform apply
 ```
+
+### How to Deploy a Docker Image to ECR
+To build and deploy a working docker image to AWS ECR run the commands below
+
+```shell script
+cd airflow
+chmod +x /scripts/deploy-to-ecr.sh
+./scripts/deploy-to-ecr.sh
+```
+
+These command will build and deploy the docker image to ECR. Once the image is uploaded
+ECS will automatically start services and tasks for:
+ 
+ - Airflow Webserver
+ - Airflow Scheduler
+ - Airflow Worker
+ 
+ Redis is created by Terraform
+
+### How to Run Built Docker Image Locally [IN DEVELOPMENT]
+
+To run the docker file image locally, execute the commands below
+
+```shell script
+cd airflow
+
+```
