@@ -1,4 +1,4 @@
-import boto3, json, textwrap, time, logging, requests
+import boto3, json, time, logging, requests
 from airflow.models import Variable
 
 
@@ -228,6 +228,7 @@ class EmrClusterController:
             for trace in statement_response.json()['output']['traceback']:
                 logging.info(trace)
             raise ValueError('Final Statement Status: ' + final_statement_status)
+        print(statement_response.json())
         logging.info('Final Statement Status: ' + final_statement_status)
 
     @staticmethod
