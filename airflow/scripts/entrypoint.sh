@@ -4,7 +4,7 @@
 : "${REDIS_PORT:="6379"}"
 : "${REDIS_PASSWORD:=""}"
 
-: "${POSTGRES_HOST:="localhost"}"
+: "${POSTGRES_HOST:="postgres"}"
 : "${POSTGRES_PORT:="5432"}"
 : "${POSTGRES_USER:="airflow"}"
 : "${POSTGRES_PASSWORD:="airflow"}"
@@ -47,9 +47,9 @@ AIRFLOW__CELERY__BROKER_URL="redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/1"
 
 case "$1" in
   webserver)
-    if [ -e "/requirements.txt" ]; then
-      pip3 install --user --upgrade -r /requirements.txt
-    fi
+#    if [ -e "/requirements.txt" ]; then
+#      pip3 install --user --upgrade -r /requirements.txt
+#    fi
 
     airflow initdb
     exec airflow webserver
@@ -59,9 +59,9 @@ case "$1" in
     exec airflow "$@"
     ;;
   worker)
-    if [ -e "/requirements.txt" ]; then
-      pip3 install --user --upgrade -r /requirements.txt
-    fi
+#    if [ -e "/requirements.txt" ]; then
+#      pip3 install --user --upgrade -r /requirements.txt
+#    fi
 
     exec airflow "$@"
     ;;

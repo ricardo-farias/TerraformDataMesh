@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
-from emr import EMR
+from controllers.EmrClusterController import EmrClusterController
 
 args = {
     'owner': 'Airflow',
@@ -10,23 +10,23 @@ args = {
 
 
 def create_cluster(**kwargs):
-    cluster_id = EMR.create_cluster_job_execution("Data Mesh Cluster", "emr-5.30.0")
+    cluster_id = EmrClusterController.create_cluster_job_execution("Covid Cluster", "emr-5.30.0")
     return cluster_id
 
 
 def wait_for_cluster(**kwargs):
     ti = kwargs['ti']
     cluster_id = ti.xcom_pull(task_ids='create_cluster')
-    EMR.wait_for_cluster_creation(cluster_id)
+    EmrClusterController.wait_for_cluster_creation(cluster_id)
 
 
 def get_credentials(**kwargs):
     ti = kwargs['ti']
     cluster_id = ti.xcom_pull(task_ids='create_cluster')
-    step_id = EMR.add_job_step(cluster_id, "Get-Credentials", "command-runner.jar",
+    step_id = EmrClusterController.add_job_step(cluster_id, "Get-Credentials", "command-runner.jar",
                            ["aws", "s3", "cp", "s3://emr-configuration-scripts/credentials", "/home/hadoop/.aws/"])
-    EMR.wait_for_step_completion(cluster_id, step_id)
-    status = EMR.get_step_status(cluster_id, step_id)
+    EmrClusterController.wait_for_step_completion(cluster_id, step_id)
+    status = EmrClusterController.get_step_status(cluster_id, step_id)
     if status == "FAILED":
         print("GET CREDENTIALS FROM S3 FAILED")
         raise RuntimeError("Get Credentials Failed During Execution: Reason documented in logs probably...?")
@@ -37,11 +37,11 @@ def get_credentials(**kwargs):
 def get_jar(**kwargs):
     ti = kwargs['ti']
     cluster_id = ti.xcom_pull(task_ids='create_cluster')
-    step_id = EMR.add_job_step(cluster_id, "Get-Jars", "command-runner.jar",
+    step_id = EmrClusterController.add_job_step(cluster_id, "Get-Jars", "command-runner.jar",
                            ['aws', 's3', 'cp', 's3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar',
                             "/home/hadoop/"])
-    EMR.wait_for_step_completion(cluster_id, step_id)
-    status = EMR.get_step_status(cluster_id, step_id)
+    EmrClusterController.wait_for_step_completion(cluster_id, step_id)
+    status = EmrClusterController.get_step_status(cluster_id, step_id)
     if status == "FAILED":
         print("GET JAR FROM S3 FAILED")
         raise RuntimeError("Get Jar Failed During Execution: Reason documented in logs probably...?")
@@ -52,11 +52,11 @@ def get_jar(**kwargs):
 def spark_submit(**kwargs):
     ti = kwargs['ti']
     cluster_id = ti.xcom_pull(task_ids='create_cluster')
-    step_id = EMR.add_job_step(cluster_id, "Spark-Submit", "command-runner.jar",
+    step_id = EmrClusterController.add_job_step(cluster_id, "Spark-Submit", "command-runner.jar",
                            ['spark-submit', '--class', 'com.ricardo.farias.App',
                             "/home/hadoop/SparkPractice-assembly-0.1.jar"])
-    EMR.wait_for_step_completion(cluster_id, step_id)
-    status = EMR.get_step_status(cluster_id, step_id)
+    EmrClusterController.wait_for_step_completion(cluster_id, step_id)
+    status = EmrClusterController.get_step_status(cluster_id, step_id)
     if status == "FAILED":
         print("SPARK SUBMIT JOB FAILED")
         raise RuntimeError("Spark Job Failed During Execution: Reason documented in logs probably...?")
@@ -67,11 +67,11 @@ def spark_submit(**kwargs):
 def terminate_cluster(**kwargs):
     ti = kwargs['ti']
     cluster_id = ti.xcom_pull(task_ids='create_cluster')
-    EMR.terminate_cluster(cluster_id)
+    EmrClusterController.terminate_cluster(cluster_id)
 
 
 dag = DAG(
-    'EMR_Job',
+    'covid-pipeline',
     default_args=args,
     description='Spark Submit job to EMR',
     schedule_interval=None,
@@ -116,6 +116,7 @@ terminate_cluster_task = PythonOperator(
     task_id="terminate_cluster",
     python_callable=terminate_cluster,
     provide_context=True,
+    trigger_rule='all_done',
     dag=dag
 )
 

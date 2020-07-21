@@ -8,14 +8,12 @@ COPY /dags ./dags
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 COPY requirements.txt /requirements.txt
-RUN pip install boto3
-RUN pip install --upgrade pip
+RUN pip3 install -r /requirements.txt
+RUN pip3 install --upgrade pip
 
 # Add directory in which pip installs to PATH
 ENV PATH="/usr/local/airflow/.local/bin:${PATH}"
-
 USER airflow
-
 
 ENTRYPOINT ["/entrypoint.sh"]
 

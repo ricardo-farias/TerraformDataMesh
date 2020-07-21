@@ -16,7 +16,7 @@ services:
     #     - ./pgdata:/var/lib/postgresql/data/pgdata
 
   webserver:
-    image: puckel/docker-airflow:1.10.9
+    image: 150222441608.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
     restart: always
     depends_on:
       - postgres
@@ -25,9 +25,9 @@ services:
       - LOAD_EX=n
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
       - EXECUTOR=Celery
-      # - POSTGRES_USER=airflow
-      # - POSTGRES_PASSWORD=airflow
-      # - POSTGRES_DB=airflow
+#      - POSTGRES_USER=airflow
+#      - POSTGRES_PASSWORD=airflow
+#      - POSTGRES_DB=airflow
       # - REDIS_PASSWORD=redispass
     volumes:
       - ./dags:/usr/local/airflow/dags
@@ -43,7 +43,7 @@ services:
       retries: 3
 
   flower:
-    image: puckel/docker-airflow:1.10.9
+    image: 150222441608.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
     restart: always
     depends_on:
       - redis
@@ -55,7 +55,7 @@ services:
     command: flower
 
   scheduler:
-    image: puckel/docker-airflow:1.10.9
+    image: 150222441608.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
     restart: always
     depends_on:
       - webserver
@@ -67,14 +67,14 @@ services:
       - LOAD_EX=n
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
       - EXECUTOR=Celery
-      # - POSTGRES_USER=airflow
-      # - POSTGRES_PASSWORD=airflow
-      # - POSTGRES_DB=airflow
+#       - POSTGRES_USER=airflow
+#       - POSTGRES_PASSWORD=airflow
+#       - POSTGRES_DB=airflow
       # - REDIS_PASSWORD=redispass
     command: scheduler
 
   worker:
-    image: puckel/docker-airflow:1.10.9
+    image: 150222441608.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
     restart: always
     depends_on:
       - scheduler
@@ -85,8 +85,8 @@ services:
     environment:
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
       - EXECUTOR=Celery
-      # - POSTGRES_USER=airflow
-      # - POSTGRES_PASSWORD=airflow
-      # - POSTGRES_DB=airflow
+#      - POSTGRES_USER=airflow
+#      - POSTGRES_PASSWORD=airflow
+#      - POSTGRES_DB=airflow
       # - REDIS_PASSWORD=redispass
     command: worker

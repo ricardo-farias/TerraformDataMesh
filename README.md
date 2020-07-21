@@ -20,7 +20,13 @@ This IAM user must have full permissions to:
 - VPC
 - EMR
 - S3
-- IAM 
+- IAM
+- ECR
+- ECS
+- Glue
+- Load Balancer
+- Elastic Cache
+- SSM
 
 ### How to Build
 Terraform plan will show all the resources that will be created, run this command:
