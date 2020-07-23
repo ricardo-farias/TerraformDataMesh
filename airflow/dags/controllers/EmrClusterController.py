@@ -103,7 +103,6 @@ class EmrClusterController:
                 'Ec2SubnetId': public_subnet,
             },
 
-
             VisibleToAllUsers=True,
             ServiceRole='iam_emr_service_role',
             JobFlowRole='emr-instance-profile',
@@ -171,7 +170,8 @@ class EmrClusterController:
     @staticmethod
     def create_spark_session(master_dns, kind='spark'):
         host = "http://" + master_dns + ":8998"
-        data = {"kind": kind}
+        conf = {"hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}
+        data = {"kind": kind, "conf": conf}
         headers = {"Content-Type": "application/json"}
         response = requests.post(host + "/sessions", data=json.dumps(data), headers=headers)
         print(f"\n\nCREATE SPARK SESSION RESPONSE STATUS CODE: {response.status_code}")
@@ -234,4 +234,47 @@ class EmrClusterController:
     @staticmethod
     def kill_spark_session(session_url):
         requests.delete(session_url, headers={"Content-Type": "application/json"})
+        print("\n\nLIVY SESSION WAS DELETED SUCCESSFULLY")
+
+    @staticmethod
+    def create_livy_batch(master_dns, path, class_name):
+        data = {"file": path, "className": class_name}
+        host = "http://" + master_dns + ":8998"
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(host + "/batches", data=json.dumps(data), headers=headers)
+        print(f"\n\nCREATE SPARK SESSION RESPONSE STATUS CODE: {response.status_code}")
+        logging.info(response.json())
+        print("\n\nCREATED LIVY SPARK SESSION SUCCESSFULLY")
+        return response.json()["id"]
+
+    @staticmethod
+    def track_livy_batch_job(master_dns, batch_id):
+        statement_status = ""
+        host = "http://" + master_dns + ":8998"
+        session_url = host + "/batches/" + str(batch_id)
+        # Poll the status of the submitted scala code
+        while statement_status != "available":
+            statement_url = host + "/state"
+            statement_response = requests.get(statement_url, headers={"Content-Type": "application/json"})
+            statement_status = statement_response.json()['state']
+            logging.info('Statement status: ' + statement_status)
+            lines = requests.get(session_url + '/log', headers={'Content-Type': 'application/json'}).json()['log']
+            for line in lines:
+                logging.info(line)
+
+            if 'progress' in statement_response.json():
+                logging.info('Progress: ' + str(statement_response.json()['progress']))
+            time.sleep(10)
+        final_statement_status = statement_response.json()['output']['status']
+        if final_statement_status == 'error':
+            logging.info('Statement exception: ' + statement_response.json()['output']['evalue'])
+            for trace in statement_response.json()['output']['traceback']:
+                logging.info(trace)
+            raise ValueError('Final Statement Status: ' + final_statement_status)
+        print(statement_response.json())
+        logging.info('Final Statement Status: ' + final_statement_status)
+
+    @staticmethod
+    def terminate_batch_job(master_dns, batch_id):
+        requests.delete(f"http://{master_dns}:8998/batches/{batch_id}", headers={"Content-Type": "application/json"})
         print("\n\nLIVY SESSION WAS DELETED SUCCESSFULLY")
