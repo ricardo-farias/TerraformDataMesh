@@ -83,6 +83,12 @@ resource "aws_security_group" "emr-security-group-master" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port = 8998
+    protocol = "tcp"
+    security_groups = [aws_security_group.worker_security_group.id]
+    to_port = 8998
+  }
 
   egress {
     from_port   = 0

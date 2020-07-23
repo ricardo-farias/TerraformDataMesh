@@ -10,13 +10,11 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:ListBucket"
-            ],
+            "Action": "s3:*",
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*"
+                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*",
+                "arn:aws:s3:::${var.data_bucket_name}/*"
             ]
         },
         {
@@ -32,27 +30,7 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
         },
         {
             "Effect": "Allow",
-            "Action": [
-                "glue:CreateDatabase",
-                "glue:DeleteDatabase",
-                "glue:GetDatabase",
-                "glue:GetDatabases",
-                "glue:UpdateDatabase",
-                "glue:CreateTable",
-                "glue:DeleteTable",
-                "glue:BatchDeleteTable",
-                "glue:UpdateTable",
-                "glue:GetTable",
-                "glue:GetTables",
-                "glue:BatchCreatePartition",
-                "glue:CreatePartition",
-                "glue:DeletePartition",
-                "glue:BatchDeletePartition",
-                "glue:UpdatePartition",
-                "glue:GetPartition",
-                "glue:GetPartitions",
-                "glue:BatchGetPartition"
-            ],
+            "Action": "glue:*",
             "Resource": [
                 "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
                 "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
@@ -103,13 +81,11 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:ListBucket"
-            ],
+            "Action": "s3:*",
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*"
+                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*",
+                "arn:aws:s3:::${var.data_bucket_name}/*"
             ]
         },
         {
@@ -125,27 +101,7 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
         },
         {
             "Effect": "Allow",
-            "Action": [
-                "glue:CreateDatabase",
-                "glue:DeleteDatabase",
-                "glue:GetDatabase",
-                "glue:GetDatabases",
-                "glue:UpdateDatabase",
-                "glue:CreateTable",
-                "glue:DeleteTable",
-                "glue:BatchDeleteTable",
-                "glue:UpdateTable",
-                "glue:GetTable",
-                "glue:GetTables",
-                "glue:BatchCreatePartition",
-                "glue:CreatePartition",
-                "glue:DeletePartition",
-                "glue:BatchDeletePartition",
-                "glue:UpdatePartition",
-                "glue:GetPartition",
-                "glue:GetPartitions",
-                "glue:BatchGetPartition"
-            ],
+            "Action": "glue:*",
             "Resource": [
                 "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
                 "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
@@ -184,12 +140,87 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
 EOF
 }
 
+resource "aws_iam_group" "citi-bike-team-group" {
+  name = "citi-bike-team"
+}
+
+resource "aws_iam_group_policy" "citi-bike-group-policy" {
+  group = aws_iam_group.citi-bike-team-group.id
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.citi-bike-bucket-name}/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "glue:*",
+            "Resource": [
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/citibiketripdata201306"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "athena:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "DenyItalyGlueTableAccess",
+            "Effect": "Deny",
+            "Action": [
+                "athena:GetQueryExecution",
+                "athena:GetQueryResults",
+                "athena:StartQueryExecution",
+                "athena:StopQueryExecution"
+            ],
+            "Resource": [
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
+            ]
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_user" "covid-us-team-member-user" {
   name = "covid-us-member1"
 }
 
 resource "aws_iam_user" "covid-italy-team-member-user" {
   name = "covid-italy-member1"
+}
+
+resource "aws_iam_user" "citi-bike-team-member-user" {
+  name = "citi-bike-member1"
 }
 
 resource "aws_iam_user_group_membership" "covid-team-assignment" {
@@ -200,6 +231,11 @@ resource "aws_iam_user_group_membership" "covid-team-assignment" {
 resource "aws_iam_user_group_membership" "covid-italy-team-assignment" {
   user   = aws_iam_user.covid-italy-team-member-user.name
   groups = [aws_iam_group.covid-italy-team-group.name]
+}
+
+resource "aws_iam_user_group_membership" "citi-bike-team-assignment" {
+  user = aws_iam_user.citi-bike-team-member-user.name
+  groups = [aws_iam_group.citi-bike-team-group.name]
 }
 
 //------------------ emr iam role

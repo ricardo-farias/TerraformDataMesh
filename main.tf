@@ -5,6 +5,13 @@ module "data-bucket" {
   force_destroy = false
 }
 
+module "bike-bucket" {
+  source = "./modules/s3"
+
+  bucket_name = "citi-bike-data-bucket"
+  force_destroy = false
+}
+
 module "logging-bucket" {
   source = "./modules/s3"
   bucket_name = var.logging_bucket_name
@@ -16,7 +23,7 @@ module "athena-bucket" {
   source = "./modules/s3"
   bucket_name = var.athena_bucket_name
 
-  force_destroy = false
+  force_destroy = true
 }
 
 module "glue" {
@@ -39,6 +46,7 @@ module "iam" {
   data_bucket_name = module.data-bucket.bucket_name
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
+  citi-bike-bucket-name = module.bike-bucket.bucket_name
 }
 
 resource "aws_ecs_cluster" "airflow" {

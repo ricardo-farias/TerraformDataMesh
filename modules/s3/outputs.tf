@@ -9,3 +9,7 @@ output "bucket_arn" {
 output "bucket_id" {
   value = aws_s3_bucket.create_bucket.id
 }
+
+output "bucket" {
+  value = aws_s3_bucket.create_bucket.bucket
+}
