@@ -10,22 +10,33 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "s3:*",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
             "Resource": [
-                "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*",
-                "arn:aws:s3:::${var.data_bucket_name}/*"
+                "arn:aws:s3:::*"
             ]
         },
         {
             "Effect": "Allow",
             "Action": [
                 "s3:ListBucket",
-                "s3:GetBucketLocation",
-                "s3:ListAllMyBuckets"
+                "s3:GetBucketLocation"
             ],
             "Resource": [
-                "*"
+                "arn:aws:s3:::${var.athena_bucket_name}",
+                "arn:aws:s3:::${var.data_bucket_name}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*",
+                "arn:aws:s3:::${var.data_bucket_name}/*"
             ]
         },
         {
@@ -81,22 +92,31 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "s3:*",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
             "Resource": [
-                "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*",
-                "arn:aws:s3:::${var.data_bucket_name}/*"
+                "arn:aws:s3:::*"
             ]
         },
         {
             "Effect": "Allow",
             "Action": [
                 "s3:ListBucket",
-                "s3:GetBucketLocation",
-                "s3:ListAllMyBuckets"
+                "s3:GetBucketLocation"
             ],
             "Resource": [
-                "*"
+                "arn:aws:s3:::${var.athena_bucket_name}",
+                "arn:aws:s3:::${var.data_bucket_name}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*",
+                "arn:aws:s3:::${var.data_bucket_name}/*"
             ]
         },
         {
@@ -152,21 +172,30 @@ resource "aws_iam_group_policy" "citi-bike-group-policy" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "s3:*",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
             "Resource": [
-                "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.citi-bike-bucket-name}/*"
+                "arn:aws:s3:::*"
             ]
         },
         {
             "Effect": "Allow",
             "Action": [
                 "s3:ListBucket",
-                "s3:GetBucketLocation",
-                "s3:ListAllMyBuckets"
+                "s3:GetBucketLocation"
             ],
             "Resource": [
-                "*"
+                "arn:aws:s3:::${var.athena_bucket_name}",
+                "arn:aws:s3:::${var.citi-bike-bucket-name}"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${var.athena_bucket_name}/*",
+                "arn:aws:s3:::${var.citi-bike-bucket-name}/*"
             ]
         },
         {
