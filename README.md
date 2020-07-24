@@ -67,3 +67,15 @@ To run the docker file image locally, execute the commands below
 cd airflow
 
 ```
+
+### How ro connecto to EKS cluster
+Connect
+```shell script
+aws eks --region us-east-2 update-kubeconfig --name airflow-cluster
+```
+Check status
+```shell script
+kubectl config get-contexts
+kubectl config current-context
+eksctl get cluster -n airflow-cluster
+```
