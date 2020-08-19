@@ -4,7 +4,6 @@ In this repo are terraform scripts to construct AWS iam roles, emr cluster, and 
 
 
 ### How to Setup Permissions
-
 Inside of ~/.aws/credentials add your aws access key and secret key.
 
 if the file 'credentials' does not exist, create one.
@@ -29,6 +28,13 @@ This IAM user must have full permissions to:
 - SSM
 
 ### How to Build
+
+If you are running Terraform for the first time, you will need to initialize Terraform configuration using 
+
+```shell script
+terraform init
+```
+
 Terraform plan will show all the resources that will be created, run this command:
 
 ```shell script

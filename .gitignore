@@ -1,13 +1,20 @@
 .idea
 .terraform
-terraform.tfstate
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+*.tfplan
 .terraform.tfstate.lock.info
 crash.log
 .DS_Store
-*.pem
+
 /__pycache__/
 *.pyc
 /airflow/dags/__pycache__/
 *.backup
+
 fernet.txt
 rds_password.txt
+*.pem

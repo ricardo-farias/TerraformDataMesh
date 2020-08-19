@@ -1,6 +1,6 @@
-module "data-bucket" {
+module "covid-data-bucket" {
   source = "./modules/s3"
-  bucket_name = var.data_bucket_name
+  bucket_name = var.covid_data_bucket_name
 
   force_destroy = false
 }
@@ -8,7 +8,7 @@ module "data-bucket" {
 module "bike-bucket" {
   source = "./modules/s3"
 
-  bucket_name = "citi-bike-data-bucket"
+  bucket_name = var.citi_bike_data_bucket_name
   force_destroy = false
 }
 
@@ -43,10 +43,10 @@ module "ecr" {
 module "iam" {
   source = "./modules/iam"
   athena_bucket_name = module.athena-bucket.bucket_name
-  data_bucket_name = module.data-bucket.bucket_name
+  covid_data_bucket_name = module.covid-data-bucket.bucket_name
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
-  citi-bike-bucket-name = module.bike-bucket.bucket_name
+  citi_bike_bucket_name = module.bike-bucket.bucket_name
 }
 
 resource "aws_ecs_cluster" "airflow" {
@@ -170,4 +170,4 @@ module "ecs" {
 //  name = var.name
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
-//}
+//} 
