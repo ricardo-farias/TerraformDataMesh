@@ -155,6 +155,10 @@ module "ecs" {
   load_balancer = module.elastic_cache.elastic_cache
 }
 
+module "cloudwatch" {
+  source = "./modules/cloudwatch"
+}
+
 //module "emr" {
 //  source = "./modules/emr"
 //  applications = var.applications
