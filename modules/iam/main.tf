@@ -187,7 +187,7 @@ resource "aws_iam_group_policy" "citi-bike-group-policy" {
             ],
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}",
-                "arn:aws:s3:::${var.citi-bike-bucket-name}"
+                "arn:aws:s3:::${var.citi_bike_bucket_name}"
             ]
         },
         {
@@ -195,7 +195,7 @@ resource "aws_iam_group_policy" "citi-bike-group-policy" {
             "Action": "s3:*",
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.citi-bike-bucket-name}/*"
+                "arn:aws:s3:::${var.citi_bike_bucket_name}/*"
             ]
         },
         {

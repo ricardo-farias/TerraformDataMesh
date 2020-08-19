@@ -19,6 +19,7 @@ database_name = "DataMeshCatalogue"
 
 # S3 Buckets
 athena_bucket_name = "athena-data-mesh-output-bucket"
-data_bucket_name = "data-mesh-covid-domain"
+citi_bike_data_bucket_name = "citi-bike-data-bucket"
+covid_data_bucket_name = "data-mesh-covid-domain"
 logging_bucket_name = "emr-data-mesh-logging-bucket"
 cluster_name = "Airflow"
