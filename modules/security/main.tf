@@ -1,9 +1,10 @@
+# TODO: Break into Network Module
 resource "aws_vpc" "vpc" {
   cidr_block           = "172.0.0.0/16"
   enable_dns_support = "true"
   enable_dns_hostnames  = "true"
   tags = {
-    name = "vpc"
+    name = var.vpc_name
   }
 }
 
@@ -37,6 +38,7 @@ resource "aws_subnet" "private-subnet" {
 }
 
 // EMR Security rules
+// TODO: Add Security Group Display Name
 resource "aws_security_group_rule" "tcp-master-connection-to-slave" {
   type              = "ingress"
   from_port         = 0
@@ -120,7 +122,6 @@ resource "aws_internet_gateway" "gw" {
 }
 
 // Route Tables
-
 resource "aws_route_table" "r" {
   vpc_id = aws_vpc.vpc.id
 

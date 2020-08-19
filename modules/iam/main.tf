@@ -25,7 +25,7 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
             ],
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}",
-                "arn:aws:s3:::${var.data_bucket_name}"
+                "arn:aws:s3:::${var.covid_data_bucket_name}"
             ]
         },
         {
@@ -35,8 +35,8 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
             ],
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-italy/*",
-                "arn:aws:s3:::${var.data_bucket_name}/*"
+                "arn:aws:s3:::${var.covid_data_bucket_name}/covid-italy/*",
+                "arn:aws:s3:::${var.covid_data_bucket_name}/*"
             ]
         },
         {
@@ -107,7 +107,7 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
             ],
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}",
-                "arn:aws:s3:::${var.data_bucket_name}"
+                "arn:aws:s3:::${var.covid_data_bucket_name}"
             ]
         },
         {
@@ -115,8 +115,8 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
             "Action": "s3:*",
             "Resource": [
                 "arn:aws:s3:::${var.athena_bucket_name}/*",
-                "arn:aws:s3:::${var.data_bucket_name}/covid-us/*",
-                "arn:aws:s3:::${var.data_bucket_name}/*"
+                "arn:aws:s3:::${var.covid_data_bucket_name}/covid-us/*",
+                "arn:aws:s3:::${var.covid_data_bucket_name}/*"
             ]
         },
         {
