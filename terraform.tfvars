@@ -23,3 +23,7 @@ citi_bike_data_bucket_name = "citi-bike-data-bucket"
 covid_data_bucket_name = "data-mesh-covid-domain"
 logging_bucket_name = "emr-data-mesh-logging-bucket"
 cluster_name = "Airflow"
+
+error_folder_name = "error/"
+raw_folder_name = "raw/"
+canonical_folder_name = "canonical/"
