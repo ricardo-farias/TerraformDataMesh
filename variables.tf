@@ -24,4 +24,8 @@ variable "covid_data_bucket_name" {}
 variable "citi_bike_data_bucket_name" {}
 variable "logging_bucket_name" {}
 
+variable "error_folder_name" {}
+variable "raw_folder_name" {}
+variable "canonical_folder_name" {}
+
 variable "cluster_name" {}

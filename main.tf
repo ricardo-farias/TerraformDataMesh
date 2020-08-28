@@ -1,28 +1,28 @@
 module "covid-data-bucket" {
   source = "./modules/s3"
   bucket_name = var.covid_data_bucket_name
-
+  key_name = [var.error_folder_name, var.raw_folder_name, var.canonical_folder_name]
   force_destroy = false
 }
 
 module "bike-bucket" {
   source = "./modules/s3"
-
   bucket_name = var.citi_bike_data_bucket_name
+  key_name = [var.error_folder_name, var.raw_folder_name, var.canonical_folder_name]
   force_destroy = false
 }
 
 module "logging-bucket" {
   source = "./modules/s3"
   bucket_name = var.logging_bucket_name
-
+  key_name = []
   force_destroy = true
 }
 
 module "athena-bucket" {
   source = "./modules/s3"
   bucket_name = var.athena_bucket_name
-
+  key_name = []
   force_destroy = true
 }
 
@@ -174,4 +174,4 @@ module "cloudwatch" {
 //  name = var.name
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
-//} 
+//}
