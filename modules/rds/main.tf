@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "airflow_subnet_group" {
-  name       = "airflow_private_subnet_group"
+  name       = "${var.project_name}-${var.environment}_airflow_private_subnet_group"
   subnet_ids = var.private_subnets
   tags = {
     Terraform = "true"

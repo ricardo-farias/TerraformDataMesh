@@ -1,5 +1,5 @@
 resource "aws_iam_group" "covid-italy-team-group" {
-  name = "covid-italy-team"
+  name = "${var.project_name}-${var.environment}-covid-italy-team"
 }
 
 resource "aws_iam_group_policy" "covid-italy-group-policy" {
@@ -81,7 +81,7 @@ EOF
 }
 
 resource "aws_iam_group" "covid-us-team-group" {
-  name = "covid-us-team"
+  name = "${var.project_name}-${var.environment}-covid-us-team"
 }
 
 resource "aws_iam_group_policy" "covid-us-group-policy" {
@@ -161,7 +161,7 @@ EOF
 }
 
 resource "aws_iam_group" "citi-bike-team-group" {
-  name = "citi-bike-team"
+  name = "${var.project_name}-${var.environment}-citi-bike-team"
 }
 
 resource "aws_iam_group_policy" "citi-bike-group-policy" {
@@ -241,15 +241,15 @@ EOF
 }
 
 resource "aws_iam_user" "covid-us-team-member-user" {
-  name = "covid-us-member1"
+  name = "${var.project_name}-${var.environment}-covid-us-member1"
 }
 
 resource "aws_iam_user" "covid-italy-team-member-user" {
-  name = "covid-italy-member1"
+  name = "${var.project_name}-${var.environment}-covid-italy-member1"
 }
 
 resource "aws_iam_user" "citi-bike-team-member-user" {
-  name = "citi-bike-member1"
+  name = "${var.project_name}-${var.environment}-citi-bike-member1"
 }
 
 resource "aws_iam_user_group_membership" "covid-team-assignment" {

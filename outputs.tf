@@ -10,6 +10,7 @@
 //  value = module.emr.master_public_dns
 //}
 
+/* ***** VPC ***** */
 output "public_subnets" {
   value = module.vpc.public_subnets
 }
@@ -26,14 +27,11 @@ output "nat_public_ips" {
   value = module.vpc.nat_public_ips
 }
 
-# output "redis_dns" {
-#   value = module.elastic_cache.redis_address
-# }
+/* ***** ECR ***** */
+output "airflow-ecr-base-repo-url" {
+  value = module.ecr.airflow-ecr-base-repo-url
+}
 
-# output "load_balancer" {
-#   value = module.load_balancer.load_balancer_dns
-# }
-
-# output "ecr_url" {
-#   value = module.ecr.airflow-ecr-repo-url
-# }
+output "airflow-ecr-dags-repo-url" {
+  value = module.ecr.airflow-ecr-dags-repo-url
+}

@@ -29,24 +29,9 @@ module "iam" {
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
   citi_bike_bucket_name = module.s3.bike-bucket
+  project_name = var.project_name
+  environment = var.environment
 }
-
-# module "load_balancer" {
-#   source = "./modules/load-balancer"
-#   internal = false
-#   listener_port = "8080"
-#   listener_protocol = "HTTP"
-#   listener_type = "forward"
-#   load_balancer_name = "airflow-load-balancer"
-#   load_balancer_type = "application"
-#   security_groups = [module.security.load_balancer_security_group_id]
-#   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
-#   target_group_name = "airflow-webserver"
-#   target_group_port = "8080"
-#   target_group_protocol = "HTTP"
-#   target_group_vpc = module.security.vpc_id
-#   matcher = "200,302"
-# }
 
  module "rds" {
    source = "./modules/rds"
@@ -57,49 +42,6 @@ module "iam" {
    project_name = var.project_name
    environment = var.environment
  }
-
- module "ssm_rds_host" {
-   source = "./modules/ssm"
-   name = "host"
-   type = "String"
-   value = module.rds.rds_address
- }
-
- module "ssm_rds_username" {
-   source = "./modules/ssm"
-   name = "username"
-   type = "String"
-   value = module.rds.rds_username
- }
-
- module "ssm_rds_engine" {
-   source = "./modules/ssm"
-   name = "engine"
-   type = "String"
-   value = module.rds.engine
- }
-
- module "ssm_rds_port" {
-   source = "./modules/ssm"
-   name = "port"
-   type = "String"
-   value = module.rds.rds_port
- }
-
- module "ssm_rds_password" {
-   source = "./modules/ssm"
-   name = "password"
-   type = "SecureString"
-   value = file("rds_password.txt")
- }
-
- module "ssm_rds_db_identifier" {
-   source = "./modules/ssm"
-   name = "dbInstanceIdentifier"
-   type = "String"
-   value = "postgres"
- }
-
 
 
 # module "cloudwatch" {
@@ -129,3 +71,20 @@ module "s3" {
    project_name = var.project_name
    environment = var.environment
 }
+
+# module "load_balancer" {
+#   source = "./modules/load-balancer"
+#   internal = false
+#   listener_port = "8080"
+#   listener_protocol = "HTTP"
+#   listener_type = "forward"
+#   load_balancer_name = "airflow-load-balancer"
+#   load_balancer_type = "application"
+#   security_groups = [module.security.load_balancer_security_group_id]
+#   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
+#   target_group_name = "airflow-webserver"
+#   target_group_port = "8080"
+#   target_group_protocol = "HTTP"
+#   target_group_vpc = module.security.vpc_id
+#   matcher = "200,302"
+# }
