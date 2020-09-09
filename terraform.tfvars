@@ -1,6 +1,6 @@
 # Project Configuration
-project_name = "art-data-mesh-poc"
-environment = "poc"
+project_name = "mj-data-mesh-poc"
+environment = "lex"
 aws_region = "us-east-2"
 
 
@@ -22,8 +22,4 @@ core_instance_count = 1
 database_name = "DataMeshCatalogue"
 
 # S3 Buckets
-athena_bucket_name = "art-athena-data-mesh-output-bucket"
-citi_bike_data_bucket_name = "art-citi-bike-data-bucket"
-covid_data_bucket_name = "art-data-mesh-covid-domain"
-logging_bucket_name = "art-emr-data-mesh-logging-bucket"
 cluster_name = "Airflow"

@@ -28,3 +28,5 @@ variable "private_subnets" {
 variable "identifier" {
   default = "airflow"
 }
+variable "project_name" {}
+variable "environment" {}

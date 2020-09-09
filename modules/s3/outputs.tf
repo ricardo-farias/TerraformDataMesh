@@ -1,15 +1,15 @@
-output "bucket_name" {
-  value = aws_s3_bucket.create_bucket.bucket
+output "covid-data-bucket" {
+  value = aws_s3_bucket.covid-data-bucket.bucket
 }
 
-output "bucket_arn" {
-  value = aws_s3_bucket.create_bucket.arn
+output "bike-bucket" {
+  value = aws_s3_bucket.bike-bucket.bucket
 }
 
-output "bucket_id" {
-  value = aws_s3_bucket.create_bucket.id
+output "logging-bucket" {
+  value = aws_s3_bucket.logging-bucket.bucket
 }
 
-output "bucket" {
-  value = aws_s3_bucket.create_bucket.bucket
+output "athena-bucket" {
+  value = aws_s3_bucket.athena-bucket.bucket
 }

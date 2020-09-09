@@ -1,12 +1,15 @@
+ output "airflow-ecr-base-repo-url" {
+   value = aws_ecr_repository.airflow-base.repository_url
+ }
 
-# output "airflow-ecr-repo-arn" {
-#   value = aws_ecr_repository.airflow-ecr-repo.arn
-# }
+ output "airflow-base" {
+   value = aws_ecr_repository.airflow-base.id
+ }
 
-# output "airflow-ecr-repo-id" {
-#   value = aws_ecr_repository.airflow-ecr-repo.id
-# }
+output "airflow-ecr-dags-repo-url" {
+   value = aws_ecr_repository.airflow-dags.repository_url
+ }
 
-# output "airflow-ecr-repo-url" {
-#   value = aws_ecr_repository.airflow-ecr-repo.repository_url
-# }
+ output "airflow-dags" {
+   value = aws_ecr_repository.airflow-dags.id
+ }

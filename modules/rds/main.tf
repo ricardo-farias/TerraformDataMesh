@@ -1,11 +1,16 @@
 resource "aws_db_subnet_group" "airflow_subnet_group" {
   name       = "airflow_private_subnet_group"
   subnet_ids = var.private_subnets
+  tags = {
+    Terraform = "true"
+    Project = var.project_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_db_instance" "airflow" {
   name                   = var.name
-  identifier             = var.identifier
+  identifier             = "${var.project_name}-${var.environment}-${var.identifier}"
   username               = var.username
   password               = var.password
 
@@ -20,5 +25,10 @@ resource "aws_db_instance" "airflow" {
   
   db_subnet_group_name   = aws_db_subnet_group.airflow_subnet_group.id
   depends_on             = [var.private_subnets]
+  tags = {
+    Terraform = "true"
+    Project = var.project_name
+    Environment = var.environment
+  }
 }
 

@@ -1,30 +1,40 @@
-resource "aws_s3_bucket" "create_bucket"{
-  bucket = var.bucket_name
-  acl = "private"
 
-  force_destroy = var.force_destroy
+resource "aws_s3_bucket" "covid-data-bucket" {
+   bucket = "${var.project_name}-${var.environment}-${var.covid_data_bucket_name}"
+   force_destroy = false
+   tags = {
+    Terraform = "true"
+    Project = var.project_name
+    Environment = var.environment
+   }
+ }
+
+ resource "aws_s3_bucket" "bike-bucket" {
+   bucket = "${var.project_name}-${var.environment}-${var.citi_bike_data_bucket_name}"
+   force_destroy = false
+   tags = {
+     Terraform = "true"
+     Project = var.project_name
+     Environment = var.environment
+   }
+ }
+
+ resource "aws_s3_bucket" "logging-bucket" {
+   bucket = "${var.project_name}-${var.environment}-${var.logging_bucket_name}"
+   force_destroy = true
+   tags = {
+     Terraform = "true"
+     Project = var.project_name
+     Environment = var.environment
+   }
+ }
+
+ resource "aws_s3_bucket" "athena-bucket" {
+   bucket = "${var.project_name}-${var.environment}-${var.athena_bucket_name}"
+   force_destroy = true
+   tags = {
+     Terraform = "true"
+     Project = var.project_name
+     Environment = var.environment
+   }
 }
-
-# module "covid-data-bucket" {
-#   source = "./modules/s3"
-#   bucket_name = var.covid_data_bucket_name
-#   force_destroy = false
-# }
-
-# module "bike-bucket" {
-#   source = "./modules/s3"
-#   bucket_name = var.citi_bike_data_bucket_name
-#   force_destroy = false
-# }
-
-# module "logging-bucket" {
-#   source = "./modules/s3"
-#   bucket_name = var.logging_bucket_name
-#   force_destroy = true
-# }
-
-# module "athena-bucket" {
-#   source = "./modules/s3"
-#   bucket_name = var.athena_bucket_name
-#   force_destroy = true
-# }
