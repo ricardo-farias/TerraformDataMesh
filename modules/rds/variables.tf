@@ -1,16 +1,30 @@
 variable "accessible" {
   type = bool
+  default = false
 }
-variable "db_username" {}
-variable "db_name" {}
-variable "instance_type" {}
-variable "engine_version" {}
-variable "db_engine" {}
+
+variable "name" {
+  default = "data-mesh-poc"
+}
+
+variable "username" {}
 variable "password" {}
-variable "security_group_ids" {
-  type = list(string)
+
+variable "instance_type" {
+  default = "db.t2.micro"
 }
-variable "subnets" {
-  type = list(string)
+
+variable "db_engine" {
+  default = "postgres"
 }
-variable "identifier" {}
+
+variable "engine_version" {
+  default = "11.6"
+}
+
+variable "private_subnets" {
+}
+
+variable "identifier" {
+  default = "airflow"
+}

@@ -263,3 +263,70 @@ resource "aws_ecs_service" "ecs-worker-service" {
 
   depends_on = [var.elastic_cache]
 }
+
+//-----------------------ECS Task Execution Role
+resource "aws_iam_role" "ecsTaskExecutionRole" {
+  name = "ecsTaskExecutionRole"
+  assume_role_policy = <<EOF
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "ecs-task-execution-policy" {
+  name = "ecs-task-execution-policy"
+  role = aws_iam_role.ecsTaskExecutionRole.id
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:PutMetricData",
+                "ds:CreateComputer",
+                "ds:DescribeDirectories",
+                "ec2:DescribeInstanceStatus",
+                "logs:*",
+                "ssm:*",
+                "ec2messages:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}

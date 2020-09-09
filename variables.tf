@@ -1,13 +1,17 @@
-variable "name" {
-  description = "Name of the DashMesh"
+variable "project_name" {
+  description = "Project Name"
+  default = "data-mesh-poc"
 }
 
-variable "region" {
+variable "aws_region" {
   description = "AWS region to deploy resources"
 }
 
+// TODO: Remove Subnet ID (Used by EMR)
 variable "subnet_id" {}
 variable "vpc_id" {}
+
+
 variable "key_name" {}
 variable "release_label" {}
 variable "applications" {
@@ -25,3 +29,6 @@ variable "citi_bike_data_bucket_name" {}
 variable "logging_bucket_name" {}
 
 variable "cluster_name" {}
+variable "environment" {
+  default = "dev"
+}

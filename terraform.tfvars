@@ -1,8 +1,12 @@
-# EMR general configurations
-name = "Data Mesh Cluster"
-region = "us-east-2"
+# Project Configuration
+project_name = "art-data-mesh-poc"
+environment = "poc"
+aws_region = "us-east-2"
+
+
 subnet_id = "<subet_id>"
 vpc_id = "<vpc_id>"
+
 key_name = "EMR-key-pair"
 ingress_cidr_blocks = "0.0.0.0/0"
 release_label = "emr-5.30.0"
@@ -18,8 +22,8 @@ core_instance_count = 1
 database_name = "DataMeshCatalogue"
 
 # S3 Buckets
-athena_bucket_name = "athena-data-mesh-output-bucket"
-citi_bike_data_bucket_name = "citi-bike-data-bucket"
-covid_data_bucket_name = "data-mesh-covid-domain"
-logging_bucket_name = "emr-data-mesh-logging-bucket"
+athena_bucket_name = "art-athena-data-mesh-output-bucket"
+citi_bike_data_bucket_name = "art-citi-bike-data-bucket"
+covid_data_bucket_name = "art-data-mesh-covid-domain"
+logging_bucket_name = "art-emr-data-mesh-logging-bucket"
 cluster_name = "Airflow"

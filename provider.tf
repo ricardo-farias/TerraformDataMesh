@@ -1,5 +1,5 @@
 provider "aws" {
   shared_credentials_file = "~/.aws/credentials"
   profile = "terraform"
-  region     = var.region
+  region     = var.aws_region
 }

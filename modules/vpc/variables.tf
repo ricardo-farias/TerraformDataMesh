@@ -1,3 +1,3 @@
 variable "project_name" {}
 variable "environment" {}
-variable "database_name" {}
+variable "aws_region" {}
