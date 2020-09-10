@@ -33,15 +33,23 @@ module "iam" {
   environment = var.environment
 }
 
- module "rds" {
-   source = "./modules/rds"
-   name = "airflow"
-   username = "airflow"
-   password = "airflow123456"
-   private_subnets = module.vpc.private_subnets
-   project_name = var.project_name
-   environment = var.environment
- }
+#  module "rds" {
+#    source = "./modules/rds"
+#    name = "airflow"
+#    username = "airflow"
+#    password = "airflow123456"
+#    private_subnets = module.vpc.private_subnets
+#    project_name = var.project_name
+#    environment = var.environment
+#  }
+
+module "eks" {
+  source = "./modules/eks"
+  subnets = module.vpc.public_subnets
+  vpc_id = module.vpc.vpc_id
+  project_name = var.project_name
+  environment = var.environment
+} 
 
 
 # module "cloudwatch" {
