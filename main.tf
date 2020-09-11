@@ -7,7 +7,7 @@ module "vpc" {
 
 module "glue" {
   source = "./modules/glue"
-  database_name = var.database_name
+  database_name = var.glue_db_name
   project_name = var.project_name
   environment = var.environment
 }
@@ -16,11 +16,11 @@ module "glue" {
 #   source = "./modules/security"
 # }
 
- module "ecr" {
+module "ecr" {
    source = "./modules/ecr"
    project_name = var.project_name
    environment = var.environment
- }
+}
 
 module "iam" {
   source = "./modules/iam"
@@ -33,15 +33,16 @@ module "iam" {
   environment = var.environment
 }
 
-#  module "rds" {
-#    source = "./modules/rds"
-#    name = "airflow"
-#    username = "airflow"
-#    password = "airflow123456"
-#    private_subnets = module.vpc.private_subnets
-#    project_name = var.project_name
-#    environment = var.environment
-#  }
+ module "rds" {
+   source = "./modules/rds"
+   name = "postgres"
+   username = "airflow"
+   password = "airflow123456"
+   vpc_id = module.vpc.vpc_id
+   private_subnets = module.vpc.private_subnets
+   project_name = var.project_name
+   environment = var.environment
+ }
 
 module "eks" {
   source = "./modules/eks"
@@ -49,8 +50,7 @@ module "eks" {
   vpc_id = module.vpc.vpc_id
   project_name = var.project_name
   environment = var.environment
-} 
-
+}
 
 # module "cloudwatch" {
 #   source = "./modules/cloudwatch"
@@ -72,7 +72,6 @@ module "eks" {
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
 //} 
-
 
 module "s3" {
   source = "./modules/s3"

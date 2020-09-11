@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-config
+data:
+  POSTGRES_HOST: "{{ .Values.airflow.postgres.host }}"
+  POSTGRES_PORT: "{{ .Values.airflow.postgres.port }}"
+  POSTGRES_USER: "{{ .Values.airflow.postgres.user }}"
+  POSTGRES_DB: "{{ .Values.airflow.postgres.db }}"
