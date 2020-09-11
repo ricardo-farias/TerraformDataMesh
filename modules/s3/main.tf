@@ -1,4 +1,3 @@
-
 resource "aws_s3_bucket" "covid-data-bucket" {
    bucket = "${var.project_name}-${var.environment}-${var.covid_data_bucket_name}"
    force_destroy = false
