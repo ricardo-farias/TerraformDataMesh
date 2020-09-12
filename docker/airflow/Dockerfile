@@ -5,7 +5,7 @@ USER root
 COPY airflow.cfg ./airflow.cfg
 COPY /dags ./dags
 
-COPY scripts/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 COPY requirements.txt /requirements.txt

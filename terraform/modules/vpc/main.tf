@@ -17,12 +17,12 @@ module "vpc" {
   }
 
   private_subnet_tags = {
-  "kubernetes.io/cluster/${var.project_name}-airflow-${var.environment}-cluster" = "shared"
+  "kubernetes.io/cluster/${var.project_name}-${var.environment}-cluster" = "shared"
   "kubernetes.io/role/internal-elb"                                              = "1"
   }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${var.project_name}-airflow-${var.environment}-cluster" = "shared"
+    "kubernetes.io/cluster/${var.project_name}-${var.environment}-cluster" = "shared"
     "kubernetes.io/role/elb"                                                       = "1"
   }
 

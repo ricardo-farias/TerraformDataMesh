@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "airflow_subnet_group" {
-  name       = "${var.project_name}-${var.environment}_airflow_private_subnet_group"
+  name       = "${var.project_name}-${var.environment}-airflow-private-subnet-group"
   subnet_ids = var.private_subnets
   tags = {
     Terraform = "true"
@@ -22,7 +22,7 @@ resource "aws_db_instance" "airflow" {
   publicly_accessible    = var.accessible
   db_subnet_group_name   = aws_db_subnet_group.airflow_subnet_group.id
   depends_on             = [var.private_subnets]
-  vpc_security_group_ids = aws_security_group.rds_security_group
+  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
   tags = {
     Terraform = "true"
     Project = var.project_name

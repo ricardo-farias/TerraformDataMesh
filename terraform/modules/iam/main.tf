@@ -43,12 +43,12 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
             "Effect": "Allow",
             "Action": "glue:*",
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
             ]
         },
         {
@@ -70,9 +70,9 @@ resource "aws_iam_group_policy" "covid-italy-group-policy" {
                 "athena:StopQueryExecution"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states"
             ]
         }
     ]
@@ -123,13 +123,13 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
             "Effect": "Allow",
             "Action": "glue:*",
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
             ]
         },
         {
@@ -151,8 +151,8 @@ resource "aws_iam_group_policy" "covid-us-group-policy" {
                 "athena:StopQueryExecution"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region"
             ]
         }
     ]
@@ -202,9 +202,9 @@ resource "aws_iam_group_policy" "citi-bike-group-policy" {
             "Effect": "Allow",
             "Action": "glue:*",
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:catalog",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:database/*",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/citibiketripdata201306"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:catalog",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:database/*",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/citibiketripdata201306"
             ]
         },
         {
@@ -226,13 +226,13 @@ resource "aws_iam_group_policy" "citi-bike-group-policy" {
                 "athena:StopQueryExecution"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
-                "arn:aws:glue:us-east-2:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_province",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid19_italy_region",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_counties",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/covid_us_states",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromjson",
+                "arn:aws:glue:${var.aws_region}:${var.glue_catalog_id}:table/${var.glue_catalog_name}/testdatafromcsv"
             ]
         }
     ]

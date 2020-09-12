@@ -31,11 +31,12 @@ module "iam" {
   citi_bike_bucket_name = module.s3.bike-bucket
   project_name = var.project_name
   environment = var.environment
+  aws_region = var.aws_region
 }
 
  module "rds" {
    source = "./modules/rds"
-   name = "postgres"
+   db_name = "postgres"
    username = "airflow"
    password = "airflow123456"
    vpc_id = module.vpc.vpc_id

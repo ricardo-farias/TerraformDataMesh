@@ -1,6 +1,6 @@
 module "eks-cluster" {
   source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = "${var.project_name}-airflow-${var.environment}-cluster"
+  cluster_name    = "${var.project_name}-${var.environment}-cluster"
   cluster_version = "1.16"
   subnets         = var.subnets
   vpc_id          = var.vpc_id
