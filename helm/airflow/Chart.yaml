@@ -1,0 +1,5 @@
+apiVersion: v1
+name: airflow
+description: AirFlow with Pipelines
+type: application
+version: 0.0.1

@@ -1,0 +1,9 @@
+version: '2.1'
+services:
+  python_emr_submitJob:
+    build: .
+    environment:
+      - AWS_REGION=us-east-2
+      - AWS_ACCESS_KEY_ID=<key_id>
+      - AWS_SECRET_ACCESS_KEY=<secret_access_key>
+    command: submit_job

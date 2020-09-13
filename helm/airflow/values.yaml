@@ -1,0 +1,18 @@
+# URL of the Dag ECR repository
+dags_image:
+  repository: 161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-aayush
+  # repository: localhost:5000/art-airflow-local
+  tag: latest
+
+airflow:
+  postgres:
+    host: data-mesh-poc-aayush-airflow.ci41jz4lefxv.us-east-2.rds.amazonaws.com
+    port: 5432
+    user: airflow
+    db: postgres
+
+# This selector value defines what Airflow will run on. In our case, we wanted to deploy Airflow to all of our EC2 instances,
+# so we have given a value here that was true for all of our instances. Node labels can be checked with:
+# "kubectl get node --show-labels"
+node_selector:
+  os: "linux"
