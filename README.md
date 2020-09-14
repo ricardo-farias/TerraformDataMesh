@@ -1,12 +1,12 @@
 ### Background
-This repo is used to setup infrastructure for the Spark Practice repository.
-In this repo are terraform scripts to construct AWS iam roles, emr cluster, and s3 buckets.
+
+This repo is used to setup AWS infrastructure for datamesh as well as setting up Airflow pipelines to run Spark Jobs for various data products.
 
 
 ### How to Setup Permissions
-Inside of ~/.aws/credentials add your aws access key and secret key.
+Inside of `~/.aws/credentials` add your aws access key and secret key.
 
-if the file 'credentials' does not exist, create one.
+If the file 'credentials' does not exist, create one.
 
 ```
 [terraform]
@@ -14,62 +14,72 @@ aws_access_key_id=**********
 aws_secret_access_key=************
 ```
 
-This IAM user must have full permissions to:
+### Running Terraform Configuration
 
-- VPC
-- EMR
-- S3
-- IAM
-- ECR
-- ECS
-- Glue
-- Load Balancer
-- Elastic Cache
-- SSM
+Open `terraform/main.tf` and make sure the following modules are active: vpc, glue, ecr, iam, rds, eks, s3
 
-### How to Build
+In `terraform/terraform.tfvars` replace the `project_name` and `environment` value with your own unique values. 
 
-If you are running Terraform for the first time, you will need to initialize Terraform configuration using 
+```shell
+cd terraform
 
-```shell script
+# Initializing Terraform Providers
 terraform init
-```
 
-Terraform plan will show all the resources that will be created, run this command:
-
-```shell script
+# Getting Terraform Plan
 terraform plan
-```
 
-To create the resources inside the plan, run this command:
-
-```shell script
+# Applying Terraform Plan
 terraform apply
 ```
 
-### How to Deploy a Docker Image to ECR
-To build and deploy a working docker image to AWS ECR run the commands below
+### Switch kubectl to use newly created EKS Cluster
 
-```shell script
-cd airflow
-chmod +x /scripts/deploy-to-ecr.sh
-./scripts/deploy-to-ecr.sh
+```shell
+aws eks --region us-east-2 update-kubeconfig --name <cluster_name>
+kubectl config set-context <eks_cluster_arn>
+
+# Example
+# aws eks --region us-east-2 update-kubeconfig --name data-mesh-poc-aayush-cluster
+# kubectl config set-context arn:aws:eks:us-east-2:161578411275:cluster/data-mesh-poc-aayush-cluster
 ```
 
-These command will build and deploy the docker image to ECR. Once the image is uploaded
-ECS will automatically start services and tasks for:
- 
- - Airflow Webserver
- - Airflow Scheduler
- - Airflow Worker
- 
- Redis is created by Terraform
+### Building Airflow Docker Image
 
-### How to Run Built Docker Image Locally [IN DEVELOPMENT]
+Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and replace the value of `ECR_URL` with your ecr_url from the AWS Console. To build and deploy a working airflow docker image to AWS ECR run following script
 
-To run the docker file image locally, execute the commands below
-
-```shell script
-cd airflow
-
+```shell
+./docker/airflow/scripts/build-deploy-airflow.sh
 ```
+
+This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow pipeline to EKS using helm
+
+### Building DAG Images 
+
+Under `docker/python_aws/main.py`, update reference to `s3_jar_path` , `s3_credentials_path` and `subnet_id` 
+
+To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on the script file and run following script
+
+```shell
+./docker/python_aws/scripts/build-deploy-python-aws.sh
+```
+
+### Deploying Airflow to EKS
+
+Under `helm/airflow/values.yaml`, update values for
+
+* `dags_image.repository`
+* `airflow.postgres.host`
+
+Under `helm/airflow/templates/secrets.yaml`, update values for
+
+* `aws_access_key_id`
+* `aws_secret_access_key`
+
+
+Perform helm install using
+
+```shell
+helm install datamesh-airflow helm/airflow
+```
+

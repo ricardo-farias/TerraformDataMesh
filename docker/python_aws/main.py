@@ -1,8 +1,8 @@
 import sys, json, os
 from controllers.EmrClusterController import EmrClusterController
 
-def create_EMR_cluster(cluster_name, emr_version):
-    cluster_id = EmrClusterController.create_cluster_job_execution(cluster_name, emr_version)
+def create_EMR_cluster(cluster_name, emr_version, subnet_ids):
+    cluster_id = EmrClusterController.create_cluster_job_execution(cluster_name, emr_version, subnet_ids)
     print("Waiting for Cluster: ", cluster_id)
     xcom_return = {"clusterId": cluster_id}
     
@@ -12,9 +12,9 @@ def create_EMR_cluster(cluster_name, emr_version):
     return EmrClusterController.wait_for_cluster_creation(cluster_id)
 
 # TODO: Refactor to take in S3 Bucket Path instead of data_product 
-def configure_job(cluster_id, data_product):
+def configure_job(cluster_id, s3_credentials_path, s3_jar_path):
     step_get_credentials = EmrClusterController.add_job_step(cluster_id, "Get-Credentials", "command-runner.jar",
-                                                ["aws", "s3", "cp", "s3://art-emr-configuration-scripts/credentials",
+                                                ["aws", "s3", "cp", s3_credentials_path,
                                                  "/home/hadoop/.aws/"])
     EmrClusterController.wait_for_step_completion(cluster_id, step_get_credentials)
     status = EmrClusterController.get_step_status(cluster_id, step_get_credentials)
@@ -23,13 +23,6 @@ def configure_job(cluster_id, data_product):
         raise RuntimeError("Get Credentials Failed During Execution: Reason documented in logs probably...?")
     elif status == "COMPLETED":
         print("GET CREDENTIALS FROM S3 COMPLETED SUCCESSFULLY")
-
-    if data_product == 'citi_bike':
-        s3_jar_path = 's3://art-emr-configuration-scripts/CitiBikeDataProduct-assembly-0.1.jar'
-    elif data_product == 'covid':
-        s3_jar_path = 's3://art-emr-configuration-scripts/SparkPractice-assembly-0.1.jar'
-    else:
-        raise RuntimeError("Invalid data_product Option")
         
     step_id = EmrClusterController.add_job_step(cluster_id, "Get-Jars", "command-runner.jar",
                                             ['aws', 's3', 'cp', s3_jar_path,"/home/hadoop/"])
@@ -43,14 +36,8 @@ def configure_job(cluster_id, data_product):
         print("GET JAR FROM S3 COMPLETED SUCCESSFULLY")    
 
 # TODO: Refactor to take in Bucket Path instead of data_product 
-def spark_submit(cluster_id, data_product):
-    if data_product == 'citi_bike':
-        jar_path = '/home/hadoop/CitiBikeDataProduct-assembly-0.1.jar'
-    elif data_product == 'covid':
-        jar_path = '/home/hadoop/SparkPractice-assembly-0.1.jar'
-    else:
-        raise RuntimeError("Invalid data_product Option")
-
+def spark_submit(cluster_id, jar_path):
+    
     step_spark_submit = EmrClusterController.add_job_step(cluster_id, "Spark-Submit", "command-runner.jar",
                                                 ['spark-submit', '--class', 'com.ricardo.farias.App',jar_path])
     EmrClusterController.wait_for_step_completion(cluster_id, step_spark_submit)
@@ -70,28 +57,28 @@ if __name__ == "__main__":
 
     if os.environ["DATA_PRODUCT"]=='citi_bike':
         data_product = "citi_bike"
+        s3_jar_path = 's3://data-mesh-poc-aayush-emr-configuration-scripts/CitiBikeDataProduct-assembly-0.1.jar'
+        jar_path = '/home/hadoop/CitiBikeDataProduct-assembly-0.1.jar'
+
     elif os.environ["DATA_PRODUCT"]=='covid':
         data_product = "covid"
+        s3_jar_path = 's3://data-mesh-poc-aayush-emr-configuration-scripts/SparkPractice-assembly-0.1.jar'
+        jar_path = '/home/hadoop/SparkPractice-assembly-0.1.jar'
     else:
         raise RuntimeError("Invalid ENV Variable - Please set appropriate DATA_PRODUCT ENV")
 
-    option = sys.argv[1]
+    subnet_id = "subnet-0b498f1098e68ec41"
+    s3_credentials_path = "s3://data-mesh-poc-aayush-emr-configuration-scripts/credentials"
+    selection = sys.argv[1]
 
-    if option == "create_cluster":
-        print ("Create EMR Cluster")
-        cluster_id = create_EMR_cluster(data_product + " Cluster", "emr-5.30.0")
-    
-    elif option == "configure_job":
-        print ("Configuring Job")
-        configure_job(sys.argv[2], data_product)
-    
-    elif option == "submit_job":
-        print("Submitting Spark Job")
-        spark_submit(sys.argv[2], data_product)
-
-    elif option == "terminate_cluster":
-        print("Terminating EMR Cluster")
+    if selection == 'create_cluster':
+        create_EMR_cluster(data_product + " Cluster", "emr-5.30.0", subnet_id)
+    elif selection == 'configure_job':
+        configure_job(sys.argv[2], s3_credentials_path, s3_jar_path)
+    elif selection == 'submit_job':
+        spark_submit(sys.argv[2], jar_path)
+    elif selection == 'terminate_cluster':
         terminate_cluster(sys.argv[2])
-    else:
+    else:        
         print ("Invalid Options")
         exit(-1)

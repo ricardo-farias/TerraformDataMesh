@@ -11,54 +11,17 @@ class EmrClusterController:
     )
 
     @staticmethod
-    def get_vpc_id():
-        ec2 = boto3.client('ec2', region_name="us-east-2", aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-                           aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"])
-        response = ec2.describe_vpcs()
-        vpc_id = response.get('Vpcs', [{}])[0].get('VpcId', '')
-        return vpc_id
-
-    @staticmethod
-    def get_security_group_id(group_name):
-        vpc_id = EmrClusterController.get_vpc_id()
-        print(f"VPC FOUND: {vpc_id}")
-        ec2 = boto3.client('ec2', region_name="us-east-2", aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-                           aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"])
-        response = ec2.describe_security_groups()
-        result = ''
-        for group in response['SecurityGroups']:
-            print(f"Security Group Found: \n\t\t {group}")
-            if group["GroupName"] == group_name:
-                result = group["GroupId"]
-                break
-        return result
-
-    @staticmethod
-    def get_subnet_id():
-        ec2 = boto3.client("ec2", region_name="us-east-2", aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-                           aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"])
-        response = ec2.describe_subnets()
-        print(response)
-        result = ''
-        for subnet in response["Subnets"]:
-            print(subnet)
-            if subnet["AvailabilityZone"] == 'us-east-2a':
-                result = subnet['SubnetId']
-        return result
-
-    @staticmethod
     def create_cluster_job_execution(name, release,
-                                     master_node_type="m4.large",
-                                     slave_node_type="m4.large",
+                                     subnet_id,
+                                     master_instance_type="m4.large",
+                                     core_instance_type="m4.large",
                                      master_instance_count=1,
-                                     slave_instance_count=1):
-        emr_master_security_group_id = EmrClusterController.get_security_group_id('security-group-master')
-        emr_slave_security_group_id = EmrClusterController.get_security_group_id('security-group-slave')
-        public_subnet = EmrClusterController.get_subnet_id()
+                                     core_instance_count=1):
+        public_subnet = subnet_id
         response = EmrClusterController.connection.run_job_flow(
             Name=name,
             ReleaseLabel=release,
-            LogUri='s3://art-emr-data-mesh-logging-bucket',
+            LogUri='s3://data-mesh-poc-aayush-emr-data-mesh-logging-bucket',
             Applications=[
                 {'Name': 'hadoop'},
                 { 'Name': 'spark'},
@@ -69,42 +32,26 @@ class EmrClusterController:
             Instances={
                 'InstanceGroups': [
                     {
-                        'Name': "Master nodes",
                         'Market': 'ON_DEMAND',
                         'InstanceRole': 'MASTER',
-                        'InstanceType': master_node_type,
+                        'InstanceType': master_instance_type,
                         'InstanceCount': master_instance_count,
-                        'Configurations': [
-                            {
-                                "Classification": "livy-conf",
-                                "Properties": {
-                                    "livy.server.session.timeout-check": "true",
-                                    "livy.server.session.timeout": "2h",
-                                    "livy.server.yarn.app-lookup-timeout": "120s"
-                                }
-                            }
-                        ]
                     },
                     {
-                        'Name': "Slave nodes",
                         'Market': 'ON_DEMAND',
                         'InstanceRole': 'CORE',
-                        'InstanceType': slave_node_type,
-                        'InstanceCount': slave_instance_count,
+                        'InstanceType': core_instance_type,
+                        'InstanceCount': core_instance_count,
                     }
                 ],
-
                 'Ec2KeyName': 'EMR-key-pair',
-                'EmrManagedMasterSecurityGroup': emr_master_security_group_id,
-                'EmrManagedSlaveSecurityGroup': emr_slave_security_group_id,
                 'KeepJobFlowAliveWhenNoSteps': True,
                 'TerminationProtected': False,
                 'Ec2SubnetId': public_subnet,
             },
-
             VisibleToAllUsers=True,
-            ServiceRole='iam_emr_service_role',
-            JobFlowRole='emr-instance-profile',
+            ServiceRole='EMR_DefaultRole',
+            JobFlowRole='EMR_EC2_DefaultRole'
         )
 
         print('cluster created with the step...', response['JobFlowId'])
