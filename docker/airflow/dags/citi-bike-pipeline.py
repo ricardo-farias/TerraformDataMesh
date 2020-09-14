@@ -18,7 +18,7 @@ dag = DAG(
 aws_access_key_id = Secret('env', 'AWS_ACCESS_KEY_ID', 'citi-bike-secrets', 'aws_access_key_id')
 aws_secret_access_key = Secret('env', 'AWS_SECRET_ACCESS_KEY', 'citi-bike-secrets', 'aws_secret_access_key')
 
-ecr_image = "020886952569.dkr.ecr.us-east-2.amazonaws.com/python-aws:latest"
+ecr_image = "<ecr_repo_url>"
 
 create_cluster_task = KubernetesPodOperator(
     namespace='citi-bike',
@@ -64,7 +64,7 @@ terminate_cluster_task = KubernetesPodOperator(namespace='default',
     name="terminate_job",
     task_id="terminate_job",
     image="020886952569.dkr.ecr.us-east-2.amazonaws.com/python-aws:latest",
-    secrets=[env_var_secret1, env_var_secret2],
+    secrets=[aws_access_key_id, aws_secret_access_key],
     arguments=["terminate_cluster", "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
     in_cluster=True,
     do_xcom_push=False,

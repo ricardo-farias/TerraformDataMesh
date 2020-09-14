@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Region
-REGION=<aws-region>
-ECR_URL=<ECR-Repo-URL>
+# Config
+REGION=us-east-2
+ECR_REPO_URL=<ecr_repo_url>
 
 if [ $? -eq 0 ]; then
-  ECR_URL=`for i in $(echo $ECR_URL | tr "/" "\n")
+  ECR_URL=`for i in $(echo $ECR_REPO_URL | tr "/" "\n")
   do
     echo $i
   done | sed -n 1p`
@@ -13,8 +13,8 @@ if [ $? -eq 0 ]; then
 fi
 
 docker build --no-cache -t airflow docker/airflow/
-docker tag airflow:latest $ECR_URL
+docker tag airflow:latest $ECR_REPO_URL
 
 if [ $? -eq 0 ]; then
-  docker push $ECR_URL
+  docker push $ECR_REPO_URL
 fi

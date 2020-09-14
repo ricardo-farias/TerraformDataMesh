@@ -52,13 +52,13 @@ Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and r
 ./docker/airflow/scripts/build-deploy-airflow.sh
 ```
 
-This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow pipeline to EKS using helm
+This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow  to EKS using helm charts
 
 ### Building DAG Images 
 
 Under `docker/python_aws/main.py`, update reference to `s3_jar_path` , `s3_credentials_path` and `subnet_id` 
 
-To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on the script file and run following script
+To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on the script file `build-deploy-python-aws.sh` and run following script
 
 ```shell
 ./docker/python_aws/scripts/build-deploy-python-aws.sh
@@ -75,11 +75,22 @@ Under `helm/airflow/templates/secrets.yaml`, update values for
 
 * `aws_access_key_id`
 * `aws_secret_access_key`
+* `POSTGRES_PASSWORD`
 
+### Create namespaces for Data Products
 
-Perform helm install using
+```
+kubectl create namespace citi-bike
+kubectl create namespace covid
+```
+
+### Deploying Airflow using Helm Charts
 
 ```shell
+# Install
 helm install datamesh-airflow helm/airflow
+
+# Uninstall
+helm uninstall datamesh-airflow
 ```
 
