@@ -96,3 +96,10 @@ module "s3" {
 #   target_group_vpc = module.security.vpc_id
 #   matcher = "200,302"
 # }
+
+resource "null_resource" "lakeFormation" {
+  provisioner "local-exec" {
+    command = "python3 ../lakeFormation/LakeFormationController.py"
+  }
+}
+
