@@ -2,6 +2,10 @@
 
 This repo is used to setup AWS infrastructure for datamesh as well as setting up Airflow pipelines to run Spark Jobs for various data products.
 
+### Prerequisites 
+* Helm Chart
+* Kubectl
+* Wget
 
 ### How to Setup Permissions
 Inside of `~/.aws/credentials` add your aws access key and secret key.
@@ -9,6 +13,10 @@ Inside of `~/.aws/credentials` add your aws access key and secret key.
 If the file 'credentials' does not exist, create one.
 
 ```
+[default]
+aws_access_key_id=**********
+aws_secret_access_key=************
+
 [terraform]
 aws_access_key_id=**********
 aws_secret_access_key=************
@@ -44,17 +52,13 @@ kubectl config set-context <eks_cluster_arn>
 # kubectl config set-context arn:aws:eks:us-east-2:161578411275:cluster/data-mesh-poc-aayush-cluster
 ```
 
-### Building Airflow Docker Image
-
-Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and replace the value of `ECR_URL` with your ecr_url from the AWS Console. To build and deploy a working airflow docker image to AWS ECR run following script
-
+### Verify kubectl
 ```shell
-./docker/airflow/scripts/build-deploy-airflow.sh
+kubectl get nodes
 ```
 
-This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow  to EKS using helm charts
-
 ### Building DAG Images 
+Under `docker/airflow/dags/citi-bike-pipeline.py`, update reference to `ecr_image` with your ecr_url from the AWS Console.
 
 Under `docker/python_aws/main.py`, update reference to `s3_jar_path` , `s3_credentials_path` and `subnet_id` 
 
@@ -63,6 +67,16 @@ To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on t
 ```shell
 ./docker/python_aws/scripts/build-deploy-python-aws.sh
 ```
+
+### Building Airflow Docker Image
+
+Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and replace the value of `ECR_REPO_URL` with your ecr_url from the AWS Console. To build and deploy a working airflow docker image to AWS ECR run following script
+
+```shell
+./docker/airflow/scripts/build-deploy-airflow.sh
+```
+
+This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow  to EKS using helm charts
 
 ### Deploying Airflow to EKS
 
@@ -94,3 +108,9 @@ helm install datamesh-airflow helm/airflow
 helm uninstall datamesh-airflow
 ```
 
+### Trigger DAG from Airflow UI
+
+```shell
+kubectl get services
+```
+This command should display the EXTERNAL-IP of your airflow cluster. Visit this URL into your browser to open the Airflow UI and trigger your DAG.
