@@ -60,9 +60,11 @@ kubectl get nodes
 ### Building DAG Images 
 Under `docker/airflow/dags/citi-bike-pipeline.py`, update reference to `ecr_image` with your ecr_url from the AWS Console.
 
+Under `docker/python_aws/controllers/EmrClusterController.py`, update reference to `LogUri` with an s3 bucket to use for EMR logging (Example: `data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
+
 Under `docker/python_aws/main.py`, update reference to `s3_jar_path` , `s3_credentials_path` and `subnet_id` 
 
-To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on the script file `build-deploy-python-aws.sh` and run following script
+To build and deploy DAG Image to AWS ECR, update the `ECR_URL` (`airflow-ecr-dags-repo-url` from outputs) and `REGION` on the script file `build-deploy-python-aws.sh` and run following script
 
 ```shell
 ./docker/python_aws/scripts/build-deploy-python-aws.sh
@@ -70,7 +72,14 @@ To build and deploy DAG Image to AWS ECR, update the `ECR_URL` and `REGION` on t
 
 ### Building Airflow Docker Image
 
-Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and replace the value of `ECR_REPO_URL` with your ecr_url from the AWS Console. To build and deploy a working airflow docker image to AWS ECR run following script
+Under `docker/airflow/dags/citi-bike-pipeline.py`, update reference to `ecr_image` with your ecr_url from the AWS Console (`airflow-ecr-dags-repo-url` from outputs).
+
+Under `docker/airflow/dags/controllers/EmrClusterController.py`, update reference to `LogUri` with your desired s3 bucket to use for EMR logging (Example: `data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
+
+Under `docker/airflow/airflow.cfg` update reference to `remote_base_log_folder` with your desired s3 bucket to use for Airflow logging
+
+Under `docker/airflow/scripts/build-deploy-airflow.sh` update the `REGION` and replace the value of `ECR_REPO_URL` with your ecr_url from the AWS Console (`airflow-ecr-base-repo-url` from outputs). To build and deploy a working airflow docker image to AWS ECR run following script
+
 
 ```shell
 ./docker/airflow/scripts/build-deploy-airflow.sh
