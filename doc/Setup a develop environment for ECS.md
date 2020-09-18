@@ -1,18 +1,33 @@
 # How to setup a develop environment for ECS using a personal AWS account
 
-## Data Mesh
+## Introduction
+
+This repo is used to setup the infrastructure for the Spark Cluster using Amazon ECS.
+
+## Procedure
 
 1. Create a personal AWS account
 
     - Create a personal [AWS Account](https://aws.amazon.com/)
-    - Create an [IAM user](https://console.aws.amazon.com/iam/home#/users) named aws_data_mesh_user .
+    - Create an [IAM user](https://console.aws.amazon.com/iam/home#/users) named `aws_data_mesh_user` .
 
-        If you forget or lose these credentials, you can't recover them. Be sure to save the following in a secure location:
+        This IAM user must have full permissions to:
+        - VPC
+        - EMR
+        - S3
+        - IAM
+        - ECR
+        - ECS
+        - Glue
+        - Load Balancer
+        - Elastic Cache
+        - SSM
+
+        Save the following in a secure location. This credential information cannot be recovered from AWS.
         - the email address associated with your AWS account
         - the AWS account ID
         - your password
-        - your secret access keys.
-    - Create a [S3 Bucket](https://s3.console.aws.amazon.com/s3/home) named emr-configuration-scripts
+        - your secret access keys
 
 1. Install applications
 
@@ -21,6 +36,7 @@
     ```bash
     brew update
     brew install terraform docker
+    terraform init # to initialize Terraform configuration locally for the first time
     ```
 
     ```bash
@@ -93,20 +109,19 @@
 
     ```bash
     # for MacOS
-    find . -not -path '*/\.*' -type f | xargs -I@ /tmp/replace.sed -i '' "@"
+    find . -not -path '*/\.*' -type f | xargs -I@ /tmp/replace.sed -i '' "@"; rm  /tmp/replace.sed
     ```
 
     ```bash
     # for linux
-    find . -not -path '*/\.*' -type f | xargs -I@ /tmp/replace.sed -i    "@"
+    find . -not -path '*/\.*' -type f | xargs -I@ /tmp/replace.sed -i    "@"; rm  /tmp/replace.sed
     ```
 
 1. Run Terraform. Record the ecr_url
 
     ```bash
-    terraform init
-    terraform plan
-    echo yes | terraform apply
+    terraform plan               # to show all the resources that will be created
+    echo yes | terraform apply   # to build the cloud infrastructure
     ```
 
 1. Deploy DAGs to AWS

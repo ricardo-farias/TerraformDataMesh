@@ -61,8 +61,7 @@
 
 ## error message
 
-    Error: ECS Task Definition container_definitions is invalid: Error decoding JSON: invalid character '\n' in string literal
-    on modules/ecs/main.tf line 187, in resource "aws_ecs_task_definition" "ecs-worker":
+    ECS Task Definition container_definitions is invalid: Error decoding JSON: invalid character '\n' in string literal
 
 ## problem
 
