@@ -60,10 +60,11 @@ spark_submit_task = KubernetesPodOperator(
     dag=dag
 )
 
-terminate_cluster_task = KubernetesPodOperator(namespace='default',
+terminate_cluster_task = KubernetesPodOperator(
+    namespace='citi-bike',
     name="terminate_job",
     task_id="terminate_job",
-    image="020886952569.dkr.ecr.us-east-2.amazonaws.com/python-aws:latest",
+    image=ecr_image,
     secrets=[aws_access_key_id, aws_secret_access_key],
     arguments=["terminate_cluster", "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
     in_cluster=True,
