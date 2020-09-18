@@ -6,28 +6,35 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
 
 ## Procedure
 
-1. Create a personal AWS account
+1. Create a [personal AWS Account](https://aws.amazon.com/)
 
-    - Create a personal [AWS Account](https://aws.amazon.com/)
-    - Create an [IAM user](https://console.aws.amazon.com/iam/home#/users) named `aws_data_mesh_user` .
+    The personal AWS account will create the root super user. Save the following credentials in a secure location. They cannot be recovered from AWS once lost:
+    - the email address associated with your AWS account
+    - the AWS account ID
+    - your password
+    - your secret access keys
 
+1. Create an [IAM user](https://console.aws.amazon.com/iam/home#/users) named **aws_data_mesh_user**
+
+    1. Click "Add User".
+        - Name: aws_data_mesh_user
+        - Access type: Programmatic access
+    1. Click "Next: Permissions"
+        - Select: DataMeshAdministrator
         This IAM user must have full permissions to:
-        - VPC
-        - EMR
-        - S3
-        - IAM
-        - ECR
-        - ECS
-        - Glue
-        - Load Balancer
-        - Elastic Cache
-        - SSM
-
-        Save the following in a secure location. This credential information cannot be recovered from AWS.
-        - the email address associated with your AWS account
-        - the AWS account ID
-        - your password
-        - your secret access keys
+            - VPC
+            - EMR
+            - S3
+            - IAM
+            - ECR
+            - ECS
+            - Glue
+            - Load Balancer
+            - Elastic Cache
+            - SSM
+    1. Click "Next" and accept defaults until user is created
+    1. Copy the "Access key ID", "Secret access key"
+        - Download the .csv for safe keeping
 
 1. Install applications
 
@@ -40,7 +47,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
     ```
 
     ```bash
-    # to generate Fernet key
+    # to generate Fernet key install
     brew install python3
     ln -s -f /usr/local/bin/python3 /usr/local/bin/python
     pip3 install cryptography
@@ -70,7 +77,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
     # move the .pem file to the repository root
     mv ~/Downloads/emr-key-pair.pem .
 
-    # save AWS secrets to user home
+    # save AWS secrets for `aws_data_mesh_user` to user home
     mkdir ~/.aws; cat ~/.aws/credentials <<EOF
     [default]
     aws_access_key_id=<ID for IAM user aws_data_mesh_user>
