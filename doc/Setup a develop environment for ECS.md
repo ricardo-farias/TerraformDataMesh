@@ -16,7 +16,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
 
 1. Create an [IAM user](https://console.aws.amazon.com/iam/home#/users) named **aws_data_mesh_user**
 
-    1. Click "Add User".
+    1. Click "Add User"
         - Name: aws_data_mesh_user
         - Access type: Programmatic access
     1. Click "Next: Permissions"
@@ -68,7 +68,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
 
     ```bash
     # get the exact name including case of the emr-key-pair
-    grep -i emr-key-pair terraform.tfvars airflow/dags/controllers/EmrClusterController.py
+    grep -ri emr-key-pair *
     ```
 
     - Create [AWS EMR Key](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs) using the exact name. Download the .pem file.
