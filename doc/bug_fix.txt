@@ -1,0 +1,72 @@
+## symptom
+    - obsolete DAGs are running in Airflow
+
+## problem
+    - `docker build` is not overwriting the older image with the same tag
+
+## solution
+
+1. to avoid the problem, use `docker build --no-cache -t airflow` when creating images
+
+1. erase all the cached airflow images
+    docker image ls             # list docker images
+    docker images -a            # list docker images
+    docker rmi -f image image   # rm image
+    echo y | docker image prune # cleanup dangling images
+
+===
+
+## command
+    terraform destroy
+
+## error message
+    - "error deleting S3 Bucket (bm-citi-bike-data-bucket): BucketNotEmpty: The bucket you tried to delete is not empty"
+    - "Error deleting security group: DependencyViolation: resource sg-0b2e17f5d5a86923f has a dependent object"
+
+## problem
+    - terraform can only destroy objects it created
+
+## solution
+
+1. manually destroy objects
+  - [S3](https://s3.console.aws.amazon.com/s3/home)
+  - [VPC](https://us-east-2.console.aws.amazon.com/vpc/home?#vpcs:)
+
+===
+
+## command
+    ./terraform-setup.sh
+
+## error message
+    Traceback (most recent call last):
+    File "<string>", line 1, in <module>
+    ImportError: No module named cryptography.fernet
+
+## problem
+    - python command is not running python3
+
+## solution
+    brew install python3
+    ln -s -f /usr/local/bin/python3 /usr/local/bin/python
+    pip3 install cryptography
+
+## discussion
+    python3 must be sym-linked. aliasing python='path/to/python3' will fail when python is involed in a sub shell ie: $(python)
+
+===
+
+## command
+    terraform destroy
+    terraform plan
+
+## error message
+
+    ECS Task Definition container_definitions is invalid: Error decoding JSON: invalid character '\n' in string literal
+
+## problem
+
+    fernet.txt or rds_password.txt have a \n character in the file
+
+## solution
+
+    chmod +x ./terraform-setup.sh; ./terraform-setup.sh
