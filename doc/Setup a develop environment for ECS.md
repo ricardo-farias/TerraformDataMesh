@@ -61,7 +61,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
     git checkout tags/ECS-Final -b setup_ecs_personal_aws
 
     # end of file must be a blank line for unix cli tools to parse them correctly
-    git ls-files -z | while IFS= read -rd '' f; do tail -c1 < "$f" | read -r _ || echo >> "$f"; done; gaa; gc -m "Added newline to end of every file"
+    git ls-files -z | while IFS= read -rd '' f; do tail -c1 < "$f" | read -r _ || echo >> "$f"; done; git commit --all -m "Add newline to end of every file"
     ```
 
 1. Create the secrets
