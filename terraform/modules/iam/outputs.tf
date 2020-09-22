@@ -13,3 +13,7 @@
 # output "ecs_task_execution_arn" {
 #   value = aws_iam_role.ecsTaskExecutionRole.arn
 # }
+
+output "iam_emr_instance_profile_role_arn" {
+  value = aws_iam_role.iam-emr-instance-profile-role.arn
+}

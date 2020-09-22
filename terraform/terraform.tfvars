@@ -1,6 +1,6 @@
 # Project Configuration
-project_name = "data-mesh-poc"
-environment = "aayush"
+project_name = "data-mesh"
+environment = "rg"
 aws_region = "us-east-2"
 
 # EMR Configuration
@@ -10,11 +10,14 @@ key_name = "EMR-key-pair"
 ingress_cidr_blocks = "0.0.0.0/0"
 release_label = "emr-5.30.0"
 applications = ["Spark", "Zeppelin", "JupyterHub"]
-master_instance_type = "m5.xlarge"
-core_instance_type = "m5.xlarge"
+master_instance_type = "m4.large"
+core_instance_type = "m4.large"
 core_instance_count = 1
 
 glue_db_name = "DataMeshCatalogue"
 
 # S3 Buckets
 cluster_name = "Airflow"
+
+# Lake Formation
+lake_formation_admin_arn = "arn:aws:iam::<account-id>:user/<your-data-mesh-user>"

@@ -31,3 +31,7 @@ variable "glue_db_name" {}
 //variable "canonical_folder_name" {}
 
 variable "cluster_name" {}
+
+variable "lake_formation_admin_arn" {
+  description = "Lake Formation Administrator"
+}

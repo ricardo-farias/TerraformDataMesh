@@ -1,14 +1,14 @@
 variable "athena_bucket_name" {
-  default = "athena-data-mesh-output-bucket"
+  default = "athena-output"
 }
 variable "covid_data_bucket_name" {
-  default = "data-mesh-covid-domain"
+  default = "covid-domain"
 }
 variable "citi_bike_data_bucket_name" {
-  default = "citi-bike-data-bucket"
+  default = "citi-bike-domain"
 }
 variable "logging_bucket_name" {
-  default = "emr-data-mesh-logging-bucket"
+  default = "emr-logs"
 }
 variable "project_name" {}
 variable "environment" {}

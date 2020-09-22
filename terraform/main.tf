@@ -10,6 +10,10 @@ module "glue" {
   database_name = var.glue_db_name
   project_name = var.project_name
   environment = var.environment
+  lake_formation_admin_arn = var.lake_formation_admin_arn
+  iam_emr_instance_profile_role_arn = module.iam.iam_emr_instance_profile_role_arn
+  covid_domain_location_arn = module.s3.covid-data-bucket_arn
+  bike_domain_location_arn = module.s3.bike-bucket_arn
 }
 
 # module "security" {
@@ -97,9 +101,4 @@ module "s3" {
 #   matcher = "200,302"
 # }
 
-resource "null_resource" "lakeFormation" {
-  provisioner "local-exec" {
-    command = "python3 ../lakeFormation/LakeFormationController.py"
-  }
-}
 
