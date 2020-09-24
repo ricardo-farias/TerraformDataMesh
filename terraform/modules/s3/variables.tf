@@ -12,3 +12,6 @@ variable "logging_bucket_name" {
 }
 variable "project_name" {}
 variable "environment" {}
+variable "error_folder_name" {}
+variable "raw_folder_name" {}
+variable "canonical_folder_name" {}
