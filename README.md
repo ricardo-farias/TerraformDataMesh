@@ -79,7 +79,7 @@ File to change: `docker/airflow/dags/citi-bike-pipeline.py`
 File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
 - Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
-####Configure CPU and Memory Allocation for Worker Nodes
+#### Configure CPU and Memory Allocation for Worker Nodes
 
 Set the KubernetesPodOperator `resources` parameter in the `create_cluster_task` of each data product (ex: citi-bike-pipeline.py and covid-pipeline-pod-operator.py) to allocate cluster resources as needed. 
 
@@ -159,9 +159,9 @@ kubectl get services
 This command should display the EXTERNAL-IP of your airflow cluster. Visit this URL into your browser to open the Airflow UI and trigger your DAG.
 ___
 
-##Running Airflow Locally with K8s
+## Running Airflow Locally with K8s
 
-####Running Terraform Configuration
+#### Running Terraform Configuration
 
 Open `terraform/main.tf` and remove or comment out the `eks` module (Leave the following modules active: vpc, glue, ecr, iam, rds, s3)
 
@@ -185,7 +185,7 @@ terraform apply
 ```
 ___
 
-####Create Local K8s Cluster using Kind
+#### Create Local K8s Cluster using Kind
 
 Install kind - Tool for running K8 Cluster using Docker container
 
@@ -220,7 +220,7 @@ Build, tag, and push your DAG image to your cluster's registry by running the fo
 ```
 ___
 
-####Deploy PostgreSQL DB in Local K8s Cluster
+#### Deploy PostgreSQL DB in Local K8s Cluster
 
 File to change: helm/airflow/values.yaml
 - Change `dags_image.repository` to `localhost:5000/airflow-local`
