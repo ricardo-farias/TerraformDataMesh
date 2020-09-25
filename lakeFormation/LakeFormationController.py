@@ -14,8 +14,8 @@ class LakeFormationController:
 
         self.db_name = params["db_name"]
         self.account_id = params["account_id"]
-        self.lf_admin = params["lf_admin"]
-        self.emr_instance_profile = params["emr_instance_profile"]
+        self.lf_admin = f"arn:aws:iam::{self.account_id}:user/{params['lf_admin']}"
+        self.emr_instance_profile = f"arn:aws:iam::{self.account_id}:role/EMR_EC2_DefaultRole"
         self.s3_domain_locations = params["s3_domain_locations"]
 
     def create_lake_formation(self):

@@ -1,5 +1,5 @@
 # Project Configuration
-project_name = "data-mesh"
+project_name = "datamesh"
 environment = "rg"
 aws_region = "us-east-2"
 
@@ -20,4 +20,4 @@ glue_db_name = "DataMeshCatalogue"
 cluster_name = "Airflow"
 
 # Lake Formation
-lake_formation_admin_arn = "arn:aws:iam::<account-id>:user/<your-data-mesh-user>"
+lake_formation_admin = "aws-data-mesh-user"

@@ -10,15 +10,10 @@ module "glue" {
   database_name = var.glue_db_name
   project_name = var.project_name
   environment = var.environment
-  lake_formation_admin_arn = var.lake_formation_admin_arn
-  iam_emr_instance_profile_role_arn = module.iam.iam_emr_instance_profile_role_arn
+  lake_formation_admin = var.lake_formation_admin
   covid_domain_location_arn = module.s3.covid-data-bucket_arn
   bike_domain_location_arn = module.s3.bike-bucket_arn
 }
-
-# module "security" {
-#   source = "./modules/security"
-# }
 
 module "ecr" {
    source = "./modules/ecr"
@@ -57,6 +52,16 @@ module "eks" {
   environment = var.environment
 }
 
+module "s3" {
+  source = "./modules/s3"
+  project_name = var.project_name
+  environment = var.environment
+}
+
+# module "security" {
+#   source = "./modules/security"
+# }
+
 # module "cloudwatch" {
 #   source = "./modules/cloudwatch"
 # }
@@ -76,29 +81,21 @@ module "eks" {
 //  name = var.name
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
-//} 
+//}
 
-module "s3" {
-  source = "./modules/s3"
-   project_name = var.project_name
-   environment = var.environment
-}
-
-# module "load_balancer" {
-#   source = "./modules/load-balancer"
-#   internal = false
-#   listener_port = "8080"
-#   listener_protocol = "HTTP"
-#   listener_type = "forward"
-#   load_balancer_name = "airflow-load-balancer"
-#   load_balancer_type = "application"
-#   security_groups = [module.security.load_balancer_security_group_id]
-#   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
-#   target_group_name = "airflow-webserver"
-#   target_group_port = "8080"
-#   target_group_protocol = "HTTP"
-#   target_group_vpc = module.security.vpc_id
-#   matcher = "200,302"
-# }
-
-
+//module "load_balancer" {
+//  source = "./modules/load-balancer"
+//  internal = false
+//  listener_port = "8080"
+//  listener_protocol = "HTTP"
+//  listener_type = "forward"
+//  load_balancer_name = "airflow-load-balancer"
+//  load_balancer_type = "application"
+//  security_groups = [module.security.load_balancer_security_group_id]
+//  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
+//  target_group_name = "airflow-webserver"
+//  target_group_port = "8080"
+//  target_group_protocol = "HTTP"
+//  target_group_vpc = module.security.vpc_id
+//  matcher = "200,302"
+//}

@@ -1,5 +1,5 @@
 resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
-  name = "${var.project_name}-${var.environment}-${var.database_name}"
+  name = "${var.project_name}${var.environment}${var.database_name}"
 }
 
 data "aws_caller_identity" "current" {}
@@ -18,8 +18,7 @@ resource "null_resource" "lakeFormation" {
         {
           db_name = aws_glue_catalog_database.aws_glue_catalog_database.name,
           account_id = data.aws_caller_identity.current.account_id,
-          lf_admin = var.lake_formation_admin_arn,
-          emr_instance_profile = var.iam_emr_instance_profile_role_arn,
+          lf_admin = var.lake_formation_admin,
           s3_domain_locations = [
             "${var.covid_domain_location_arn}/covid-italy",
             "${var.covid_domain_location_arn}/covid-us",

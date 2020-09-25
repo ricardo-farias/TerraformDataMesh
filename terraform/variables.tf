@@ -32,6 +32,6 @@ variable "glue_db_name" {}
 
 variable "cluster_name" {}
 
-variable "lake_formation_admin_arn" {
+variable "lake_formation_admin" {
   description = "Lake Formation Administrator"
 }
