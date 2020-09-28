@@ -56,6 +56,9 @@ module "s3" {
   source = "./modules/s3"
   project_name = var.project_name
   environment = var.environment
+  error_folder_name = var.error_folder_name
+  raw_folder_name = var.raw_folder_name
+  canonical_folder_name = var.canonical_folder_name
 }
 
 # module "security" {
@@ -83,19 +86,19 @@ module "s3" {
 //  subnet_id = module.security.subnet_id
 //}
 
-//module "load_balancer" {
-//  source = "./modules/load-balancer"
-//  internal = false
-//  listener_port = "8080"
-//  listener_protocol = "HTTP"
-//  listener_type = "forward"
-//  load_balancer_name = "airflow-load-balancer"
-//  load_balancer_type = "application"
-//  security_groups = [module.security.load_balancer_security_group_id]
-//  subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
-//  target_group_name = "airflow-webserver"
-//  target_group_port = "8080"
-//  target_group_protocol = "HTTP"
-//  target_group_vpc = module.security.vpc_id
-//  matcher = "200,302"
-//}
+// module "load_balancer" {
+//   source = "./modules/load-balancer"
+//   internal = false
+//   listener_port = "8080"
+//   listener_protocol = "HTTP"
+//   listener_type = "forward"
+//   load_balancer_name = "airflow-load-balancer"
+//   load_balancer_type = "application"
+//   security_groups = [module.security.load_balancer_security_group_id]
+//   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
+//   target_group_name = "airflow-webserver"
+//   target_group_port = "8080"
+//   target_group_protocol = "HTTP"
+//   target_group_vpc = module.security.vpc_id
+//   matcher = "200,302"
+// }

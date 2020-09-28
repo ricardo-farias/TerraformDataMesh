@@ -18,6 +18,9 @@ glue_db_name = "DataMeshCatalogue"
 
 # S3 Buckets
 cluster_name = "Airflow"
+error_folder_name = "error/"
+raw_folder_name = "raw/"
+canonical_folder_name = "canonical/"
 
 # Lake Formation
 lake_formation_admin = "aws-data-mesh-user"
