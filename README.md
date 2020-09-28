@@ -26,6 +26,18 @@ aws_secret_access_key=************
 ```
 ___
 
+### Upload Data Products and Credentials
+Create a S3 bucket from the AWS console to hold data product jar and credential files. Upload your files to the S3 bucket.
+
+```shell script
+aws s3 cp ~/.aws/credentials s3://<config_bucket_name> --region us-east-2
+aws s3 cp <jar_file> s3://<config_bucket_name>/
+
+# Example
+# aws s3 cp ~/.aws/credentials s3://data-mesh-poc-yourname-emr-configuration-scripts --region us-east-2
+# aws s3 cp YourDataProduct-assembly-0.1.jar s3://data-mesh-poc-yourname-emr-configuration-scripts/
+``` 
+
 ### Running Terraform Configuration
 
 Open `terraform/main.tf` and make sure the following modules are active: vpc, glue, ecr, iam, rds, eks, s3
@@ -45,6 +57,13 @@ terraform plan
 terraform apply
 ```
 ___
+
+### Upload Raw Data for Processing
+Upload your raw data into the `/raw` folder of the S3 bucket created by the `terraform apply` command for your product's domain.  
+
+```shell script
+aws s3 cp <raw_data_files> s3://data-mesh-poc-yourname-citi-bike-data-bucket/raw --recursive
+```
 
 ### Switch kubectl to use newly created EKS Cluster
 
