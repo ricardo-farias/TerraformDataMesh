@@ -1,23 +1,15 @@
-output "covid-data-bucket" {
-  value = aws_s3_bucket.covid-data-bucket.bucket
+output "source_domain_config_map_result" {
+  value = local.source_domain_config_map
 }
 
-output "bike-bucket" {
-  value = aws_s3_bucket.bike-bucket.bucket
+output "non_source_domain_bucket_list_map_result" {
+  value = local.non_source_domain_bucket_list_map
 }
 
-output "covid-data-bucket_arn" {
-  value = aws_s3_bucket.covid-data-bucket.arn
+output "source_domain_bucket_list_map_result" {
+  value = local.source_domain_bucket_list_map
 }
 
-output "bike-bucket_arn" {
-  value = aws_s3_bucket.bike-bucket.arn
-}
-
-output "logging-bucket" {
-  value = aws_s3_bucket.logging-bucket.bucket
-}
-
-output "athena-bucket" {
-  value = aws_s3_bucket.athena-bucket.bucket
+output "bucket_list_map_result" {
+  value = local.bucket_list_map
 }

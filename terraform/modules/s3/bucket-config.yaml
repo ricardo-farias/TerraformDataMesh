@@ -1,0 +1,19 @@
+source_domain:
+- bucket: data-mesh-covid-domain
+  product:
+  - italy/
+  - us/
+  folder:
+  - raw/
+  - canonical/
+  - error/
+- bucket: citi-bike-data-bucket
+  product:
+  - bike-data/
+  folder:
+  - raw/
+  - canonical/
+  - error/
+non_source_domain:
+- bucket: athena-data-mesh-output-bucket
+- bucket: emr-data-mesh-logging-bucket

@@ -26,10 +26,6 @@ variable "ingress_cidr_blocks" {}
 
 variable "glue_db_name" {}
 
-variable "error_folder_name" {}
-variable "raw_folder_name" {}
-variable "canonical_folder_name" {}
-
 variable "cluster_name" {}
 
 variable "lake_formation_admin" {
