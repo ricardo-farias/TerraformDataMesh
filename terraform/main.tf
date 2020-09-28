@@ -1,3 +1,7 @@
+locals {
+  bucket_config_data_yaml = yamldecode(file("./modules/s3/bucket-config.yaml"))
+}
+
 module "vpc" {
   source = "./modules/vpc"
   project_name = var.project_name
@@ -24,11 +28,11 @@ module "ecr" {
 
 module "iam" {
   source = "./modules/iam"
-  athena_bucket_name = module.s3.athena-bucket
-  covid_data_bucket_name = module.s3.covid-data-bucket
+  athena_bucket_name = local.bucket_config_data_yaml.non_source_domain[0].bucket
+  covid_data_bucket_name = local.bucket_config_data_yaml.source_domain[0].bucket
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
-  citi_bike_bucket_name = module.s3.bike-bucket
+  citi_bike_bucket_name = local.bucket_config_data_yaml.source_domain[1].bucket
   project_name = var.project_name
   environment = var.environment
   aws_region = var.aws_region
@@ -78,9 +82,6 @@ module "s3" {
   source = "./modules/s3"
   project_name = var.project_name
   environment = var.environment
-  error_folder_name = var.error_folder_name
-  raw_folder_name = var.raw_folder_name
-  canonical_folder_name = var.canonical_folder_name
 }
 
 // module "load_balancer" {

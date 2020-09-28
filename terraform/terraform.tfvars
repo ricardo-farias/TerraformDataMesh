@@ -16,8 +16,5 @@ core_instance_count = 1
 
 glue_db_name = "DataMeshCatalogue"
 
-# S3 Buckets
+# EKS
 cluster_name = "Airflow"
-error_folder_name = "error/"
-raw_folder_name = "raw/"
-canonical_folder_name = "canonical/"
