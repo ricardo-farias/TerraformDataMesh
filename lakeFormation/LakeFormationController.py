@@ -76,10 +76,11 @@ class LakeFormationController:
 
     def register_all_resources(self, resource_list):
         for resource in resource_list:
+            bucket_arn = f"arn:aws:s3:::{resource}"
             try:
-                self.register_resource_location(resource)
+                self.register_resource_location(bucket_arn)
             except self.client.exceptions.AlreadyExistsException:
-                print(f"Resource {resource} already exists")
+                print(f"Resource {bucket_arn} already exists")
 
     def register_resource_location(self, bucket_arn):
         response = self.client.register_resource(
