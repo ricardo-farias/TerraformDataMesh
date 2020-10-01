@@ -62,6 +62,8 @@ if there is a serious merge conflict requiring a long refactor, rename your loca
 Delete local branches develop, main
 Use origin/develop as the start point of feature branches. ie: git checkout origin/develop -b feature_branch
 
-## reference
+## References
 
--
+- [git CLI - Scott Chacon](http://schacon.github.io/git/git.html)
+- [git SCM](https://git-scm.com/)
+- [Pro Git book by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2)
