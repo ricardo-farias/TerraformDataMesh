@@ -35,6 +35,27 @@
 ===
 
 ## command
+    terraform destroy
+
+## error message
+    - "Error deleting security group: DependencyViolation: resource sg-0b2e17f5d5a86923f has a dependent object"
+    AND
+    - "Error: InvalidDBSubnetGroupStateFault: Cannot delete the subnet group
+      'data-mesh-poc-aayush-airflow-private-subnet-group' because at least one database instance:
+       data-mesh-poc-aayush-airflow is still using it."
+
+## problem
+    - terraform can only destroy objects it created
+
+## solution
+
+1. manually destroy RDS database then VPC
+  - [RDS/Database](https://us-east-2.console.aws.amazon.com/rds/home?region=us-east-2#databases:)
+  - [VPC](https://us-east-2.console.aws.amazon.com/vpc/home?#vpcs:)
+
+===
+
+## command
     ./terraform-setup.sh
 
 ## error message
