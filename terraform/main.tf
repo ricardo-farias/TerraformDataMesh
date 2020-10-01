@@ -15,8 +15,8 @@ module "glue" {
   project_name = var.project_name
   environment = var.environment
   lake_formation_admin = var.lake_formation_admin
-  covid_domain_location_arn = module.s3.covid-data-bucket_arn
-  bike_domain_location_arn = module.s3.bike-bucket_arn
+  covid_domain_location_arn = local.bucket_config_data_yaml.source_domain[0].bucket
+  bike_domain_location_arn = local.bucket_config_data_yaml.source_domain[1].bucket
 }
 
 module "ecr" {
