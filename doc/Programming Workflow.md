@@ -12,19 +12,6 @@ why:
 
 why:
 
-- files are moved on local, and on origin
-
-|       |            |          |            |
-|-------|------------|----------|------------|
-|       |            | origin   | origin     |
-|       |            | changed  | unchanged  |
-| local | changed    |          |            |
-| local | unchanged  |          |            |
-
-- folders moving. Test:
-  - create a data file in develop:start/SOURCE.TXT
-  - git checkout origin/develop -b 01_feature
-
 ### c: The uncertainty of the final directory structure results in files shifting
 
 ## Principles
@@ -43,8 +30,6 @@ why:
 
 ![Git Flow Branching Model](git-flow-model.png)
 
-### workflow
-
 ### it should be easy to determine if upstream changes will conflict with local code
 
 workflow to diff upstream develop branch with local feature branch
@@ -60,8 +45,8 @@ git difftool --cached origin/master                        # compare the STAGED 
 
 two options for bringing in upstream changes:
 
-- merge. when local has changed more than upstream. [merge diagram](dia-merge.png)
-- rebase. when upstream has changed more than local. [rebase diagram](dia-rebase.png)
+- merge. when local has changed more than upstream. ![merge diagram](dia-merge.svg)
+- rebase. when upstream has changed more than local. ![rebase diagram](dia-rebase.svg)
 
 if there is a serious merge conflict requiring a long refactor, use cherry-pick of origin/master to pop in major changes into your branch
 
