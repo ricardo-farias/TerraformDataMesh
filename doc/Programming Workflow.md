@@ -24,7 +24,7 @@ why:
 
 ### branches
 
-- `xx_feature_branch` contains the commits for a single feature under development
+- `feature_branch` contains the commits for a single feature under development
 - `develop` contains all the features under development. (the current develop branch is called  `master`. It will be renamed when the repo moves)
 - `release_stable` contains stable snapshots of the `develop` (aka `master`) branch
 
@@ -36,13 +36,12 @@ workflow to diff upstream develop branch with local feature branch
 
 ```shell
 git fetch origin --prune
-git checkout 66_document_code_workflow -B wip_compare_upstream
-git add -u                                                 # only add tracked files
-git reset --soft `git merge-base --fork-point master head` # squash the local branch into one commit. put that commit in STAGED INDEX
-git difftool --cached origin/master                        # compare the STAGED INDEX to upstream develop
-git reset --soft 66_document_code_workflow                 # bring edited files into feature branch
-git checkout 66_document_code_workflow
-git branch -d wip_compare_upstream
+git checkout feature_branch -B wip_compare_upstream          # setup
+git add -u                                                   # only add tracked files
+git reset --soft `git merge-base --fork-point master head`   # squash the local branch into one commit. put that commit in STAGED INDEX
+git difftool --cached origin/master                          # compare the STAGED INDEX to upstream develop
+git reset --soft feature_branch; git checkout feature_branch # bring edited files into feature branch
+git branch -d wip_compare_upstream                           # cleanup
 ```
 
 ### it is better to resolve code conflicts in a feature branch than in the develop branch
