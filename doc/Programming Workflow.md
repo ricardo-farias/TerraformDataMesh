@@ -20,13 +20,14 @@ why:
 - it is better to resolve code conflicts in a feature branch than in the develop branch
 - it should be easy for all developers to identify commits that contain unstable code
 
-## Proposed git workflow
+## git workflow
 
 ### branches
 
 - `feature_branch` contains the commits for a single feature under development
 - `develop` contains all the features under development. (the current develop branch is called  `master`. It will be renamed when the repo moves)
-- `release_stable` contains stable snapshots of the `develop` (aka `master`) branch
+- `release_ecs` contains stable snapshots of the `develop` (aka `master`) branch
+- `release_eks` contains stable snapshots of the `develop` (aka `master`) branch
 
 ![Git Flow Branching Model](git-flow-model.png)
 
@@ -46,17 +47,21 @@ git branch -d wip_compare_upstream                           # cleanup
 
 ### it is better to resolve code conflicts in a feature branch than in the develop branch
 
-two options for bringing in upstream changes:
+three options for bringing in upstream changes:
 
 - merge. when local has changed more than upstream. ![merge diagram](dia-merge.svg)
 - rebase. when upstream has changed more than local. ![rebase diagram](dia-rebase.svg)
-
-if there is a serious merge conflict requiring a long refactor, use cherry-pick of origin/master to pop in major changes into your branch
+- cherry-pick. when there are serious merge conflicts requiring a long refactor
 
 ### it should be easy for all developers to identify commits that contain unstable code
 
 - Submit feature branches via Pull Requests
 - Delete local branches develop, main
+
+  ```shell
+  git branch -d master
+  ```
+
 - Use upstream develop as the start point of feature branches.
 
   ```shell
