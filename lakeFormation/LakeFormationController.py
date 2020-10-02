@@ -19,12 +19,20 @@ class LakeFormationController:
         self.s3_domain_locations = params["s3_domain_locations"]
 
     def create_lake_formation(self):
-        self.overwrite_administrators(self.lf_admin)
+        self.add_administrator(self.lf_admin)
         self.grant_permissions(self.lf_admin, 'Database', ["ALL"], ["ALL"])
         self.grant_permissions(self.lf_admin, 'Table', ["ALL"], ["ALL"])
         self.grant_permissions(self.emr_instance_profile, 'Database', ["ALL"])
         self.grant_permissions(self.emr_instance_profile, 'Table', ["ALL"])
         self.register_all_resources(self.s3_domain_locations)
+
+    def destroy_lake_formation(self):
+        self.remove_administrator(self.lf_admin)
+        # self.remove_permissions(self.lf_admin, 'Database', ["ALL"], ["ALL"])
+        # self.remove_permissions(self.lf_admin, 'Table', ["ALL"], ["ALL"])
+        # self.remove_permissions(self.emr_instance_profile, 'Database', ["ALL"])
+        # self.remove_permissions(self.emr_instance_profile, 'Table', ["ALL"])
+        # self.deregister_all_resources(self.s3_domain_locations)
 
     def overwrite_administrators(self, admin_arn):
         response = self.client.put_data_lake_settings(
@@ -36,8 +44,31 @@ class LakeFormationController:
                 ]
             }
         )
-        if response["ResponseMetadata"]["HTTPStatusCode"] is 200:
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
             print(f"AWS Lake Formation Administrator set to {admin_arn}")
+        else:
+            print(response)
+
+    def add_administrator(self, lf_admin):
+        data_lake_settings = self.client.get_data_lake_settings()
+        current_administrators = data_lake_settings["DataLakeSettings"]["DataLakeAdmins"]
+        current_administrators.append({'DataLakePrincipalIdentifier': lf_admin})
+        response = self.client.put_data_lake_settings(DataLakeSettings=data_lake_settings["DataLakeSettings"])
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            print(f"{lf_admin} is now an AWS Lake Formation Administrator")
+        else:
+            print(response)
+
+    def remove_administrator(self, lf_admin):
+        data_lake_settings = self.client.get_data_lake_settings()
+        administrators = data_lake_settings["DataLakeSettings"]["DataLakeAdmins"]
+        try:
+            administrators.remove({'DataLakePrincipalIdentifier': lf_admin})
+        except ValueError:
+            print(f"{lf_admin} was not an AWS Lake Formation Administrator")
+        response = self.client.put_data_lake_settings(DataLakeSettings=data_lake_settings["DataLakeSettings"])
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            print(f"{lf_admin} is no longer an AWS Lake Formation Administrator")
         else:
             print(response)
 
@@ -69,7 +100,7 @@ class LakeFormationController:
             PermissionsWithGrantOption=grant_permission_list
         )
 
-        if response['ResponseMetadata']['HTTPStatusCode'] is 200:
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
             print(f"Permissions granted to {principal_arn}")
         else:
             print(resource, response)
@@ -88,13 +119,31 @@ class LakeFormationController:
             UseServiceLinkedRole=True,
         )
 
-        if response['ResponseMetadata']['HTTPStatusCode'] is 200:
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
             print(f"{bucket_arn} successfully registered")
         else:
             print(response)
 
 
 if __name__ == "__main__":
-    params = json.loads(sys.argv[1])
+    create_or_destroy = sys.argv[1]
+    if sys.argv[2] == 'testing':
+        params = json.loads(
+            '{ "db_name": "datameshatndatameshcatalogue", '
+            '"account_id":"233329490210", '
+            '"lf_admin":"DataMeshPOC", '
+            '"s3_domain_locations":['
+            '"datamesh-atn-covid-domain/covid-italy",'
+            '"datamesh-atn-covid-domain/covid-us",'
+            '"datamesh-atn-bike-domain"]'
+            '}'
+        )
+    else:
+        params = json.loads(sys.argv[2])
     lakeFormationController = LakeFormationController(params)
-    LakeFormationController.create_lake_formation(lakeFormationController)
+    if create_or_destroy == 'create':
+        LakeFormationController.create_lake_formation(lakeFormationController)
+    elif create_or_destroy == 'destroy':
+        LakeFormationController.destroy_lake_formation(lakeFormationController)
+    else:
+        print('please pass either destroy or create as first variable')
