@@ -9,68 +9,70 @@ args = {
 }
 
 dag = DAG(
-    'citi-bike-pipeline',
+    'covid-pipeline',
     default_args=args,
-    description='Citi Bike Pipeline',
+    description='Covid Pipeline',
     schedule_interval=None,
 )
 
-aws_access_key_id = Secret('env', 'AWS_ACCESS_KEY_ID', 'citi-bike-secrets', 'aws_access_key_id')
-aws_secret_access_key = Secret('env', 'AWS_SECRET_ACCESS_KEY', 'citi-bike-secrets', 'aws_secret_access_key')
+aws_access_key_id = Secret('env', 'AWS_ACCESS_KEY_ID', 'covid-secrets', 'aws_access_key_id')
+aws_secret_access_key = Secret('env', 'AWS_SECRET_ACCESS_KEY', 'covid-secrets', 'aws_secret_access_key')
 
-ecr_image = "<ecr_repo_url>"
+ecr_image = "161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-aperson:python-aws-latest"
+# ecr_image = "localhost:5000/python-aws"
 
 create_cluster_task = KubernetesPodOperator(
-    namespace='citi-bike',
+    namespace='covid',
     task_id="create_cluster",
     name="create_cluster_task",
     image=ecr_image,
     image_pull_policy='Always',
     arguments=["create_cluster"],
     do_xcom_push=True,
-    secrets=[aws_access_key_id, aws_secret_access_key],    
-    env_vars={'DATA_PRODUCT':'citi_bike'},
+    secrets=[aws_access_key_id, aws_secret_access_key],
+    env_vars={'DATA_PRODUCT':'covid'},
     dag=dag
 )
 
 configure_job = KubernetesPodOperator(
-    namespace='citi-bike',
-    task_id="configure_job",
+    namespace='covid',
     name="configure_job",
+    task_id="configure_job",
     image=ecr_image,
-    image_pull_policy='Always',
     arguments=["configure_job",
     "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
-    do_xcom_push=False,    
+    do_xcom_push=False,
+    image_pull_policy='Always',
     secrets=[aws_access_key_id, aws_secret_access_key],
-    env_vars={'DATA_PRODUCT':'citi_bike'},
+    env_vars={'DATA_PRODUCT':'covid'},
     dag=dag
 )
 
 spark_submit_task = KubernetesPodOperator(
-    namespace='citi-bike',
-    task_id="submit_job",    
+    namespace='covid',
     name="submit_job",
+    task_id="submit_job",
     image=ecr_image,
     image_pull_policy='Always',
+    secrets=[aws_access_key_id, aws_secret_access_key],
     arguments=["submit_job", "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
     do_xcom_push=False,
-    secrets=[aws_access_key_id, aws_secret_access_key],
-    env_vars={'DATA_PRODUCT':'citi_bike'},
+    env_vars={'DATA_PRODUCT':'covid'},
     dag=dag
 )
 
 terminate_cluster_task = KubernetesPodOperator(
-    namespace='citi-bike',
+    namespace='covid',
     name="terminate_job",
     task_id="terminate_job",
     image=ecr_image,
+    image_pull_policy='Always',
     secrets=[aws_access_key_id, aws_secret_access_key],
     arguments=["terminate_cluster", "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
     in_cluster=True,
     do_xcom_push=False,
-    env_vars={'DATA_PRODUCT':'citi_bike'},
-    image_pull_policy='Always',
+    env_vars={'DATA_PRODUCT':'covid'},
+    get_logs=True,
     dag=dag
 )
 
