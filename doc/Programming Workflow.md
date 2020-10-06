@@ -74,3 +74,4 @@ three options for bringing in upstream changes:
 - [git CLI - Scott Chacon](http://schacon.github.io/git/git.html)
 - [git SCM](https://git-scm.com/)
 - [Pro Git book by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2)
+- [Advanced Workflows](http://schacon.github.io/git/gitworkflows.html)
