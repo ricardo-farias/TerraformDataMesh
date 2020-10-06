@@ -35,20 +35,16 @@ class LakeFormationController:
         # self.remove_administrator(self.lf_admin)
 
 
-    # def overwrite_administrators(self, admin_arn):
-    #     response = self.client.put_data_lake_settings(
-    #         DataLakeSettings={
-    #             'DataLakeAdmins': [
-    #                 {
-    #                     'DataLakePrincipalIdentifier': admin_arn
-    #                 },
-    #             ]
-    #         }
-    #     )
-    #     if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
-    #         print(f"AWS Lake Formation Administrator set to {admin_arn}")
-    #     else:
-    #         print(response)
+    def clear_administrators(self):
+        response = self.client.put_data_lake_settings(
+            DataLakeSettings={
+                'DataLakeAdmins': []
+            }
+        )
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            print("Removed all Lake Formation Administrators")
+        else:
+            print(response)
 
     def add_administrator(self, lf_admin):
         data_lake_settings = self.client.get_data_lake_settings()
@@ -201,5 +197,7 @@ if __name__ == "__main__":
         LakeFormationController.create_lake_formation(lakeFormationController)
     elif create_or_destroy == 'destroy':
         LakeFormationController.destroy_lake_formation(lakeFormationController)
+    # elif create_or_destroy == 'nuke':
+    #     LakeFormationController.clear_administrators(lakeFormationController)
     else:
         print('please pass either destroy or create as first variable')
