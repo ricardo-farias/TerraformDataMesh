@@ -28,10 +28,14 @@ output "nat_public_ips" {
 }
 
 /* ***** ECR ***** */
-output "airflow-ecr-base-repo-url" {
-  value = module.ecr.airflow-ecr-base-repo-url
+output "platform-shared-ecr-repo-url" {
+  value = module.ecr.platform-shared-ecr-repo-url
 }
 
-output "airflow-ecr-dags-repo-url" {
-  value = module.ecr.airflow-ecr-dags-repo-url
+output "covid-ecr-repo-url" {
+  value = module.ecr.covid-ecr-repo-url
+}
+
+output "citi-bike-ecr-repo-url" {
+  value = module.ecr.citi-bike-ecr-repo-url
 }
