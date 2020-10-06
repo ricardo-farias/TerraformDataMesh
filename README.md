@@ -62,7 +62,7 @@ ___
 Upload your raw data into the `/raw` folder of the S3 bucket created by the `terraform apply` command for your product's domain.  
 
 ```shell script
-aws s3 cp <raw_data_files> s3://data-mesh-poc-yourname-citi-bike-data-bucket/raw --recursive
+aws s3 cp <raw_data_files> s3://data-mesh-poc-yourname-citi-bike-data-bucket/bike-data/raw --recursive
 ```
 
 ### Switch kubectl to use newly created EKS Cluster
