@@ -14,7 +14,7 @@ master_instance_type = "m4.large"
 core_instance_type = "m4.large"
 core_instance_count = 1
 
-glue_db_name = "DataMeshCatalogue"
+glue_db_name = "datameshcatalogue"
 
 # Lake Formation
 lake_formation_admin = "aws-data-mesh-user"

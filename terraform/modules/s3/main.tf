@@ -7,7 +7,7 @@ locals {
       [for folder_name in source_domain.folder : {
           "${source_domain.bucket}-${product_name}-${folder_name}" = {
           bucket = source_domain.bucket
-          key = "${product_name} ${folder_name}"
+          key = "${product_name}${folder_name}"
       }}]
     ]])
 

@@ -70,3 +70,27 @@
 ## solution
 
     chmod +x ./terraform-setup.sh; ./terraform-setup.sh
+
+===
+
+## command
+    terraform destroy
+
+## error message
+
+    Error: Error waiting for internet gateway (igw-0d058e4969913eb24) to detach: timeout while waiting for state to become 'detached' (last state: 'detaching', timeout: 15m0s)
+    Error: error deleting subnet (subnet-0d3ebafc9f34faa5a): timeout while waiting for state to become 'destroyed' (last state: 'pending', timeout: 20m0s)
+
+## problem
+
+    helm airflow is still using the internet gateway so aws cannot detach it.
+
+## prevention
+
+    uninstall airflow instance before using terraform destroy:
+    `helm uninstall datamesh-airflow`
+
+## solution
+
+    Manually delete load balancer in EC2
+    Then manually delete VPC
