@@ -3,7 +3,8 @@
 This repo is used to setup AWS infrastructure for datamesh as well as setting up Airflow pipelines to run Spark Jobs for various data products.
 ___
 
-### Prerequisites 
+### Prerequisites
+
 * Helm Chart
 * Kubectl
 * Wget
@@ -11,6 +12,7 @@ ___
 ___
 
 ### How to Setup Permissions
+
 Inside of `~/.aws/credentials` add your aws access key and secret key.
 
 If the file 'credentials' does not exist, create one.
@@ -24,9 +26,11 @@ aws_secret_access_key=************
 aws_access_key_id=**********
 aws_secret_access_key=************
 ```
+
 ___
 
 ### Upload Data Products and Credentials
+
 Create a S3 bucket from the AWS console to hold data product jar and credential files. Upload your files to the S3 bucket.
 
 ```shell script
@@ -36,13 +40,13 @@ aws s3 cp <jar_file> s3://<config_bucket_name>/
 # Example
 # aws s3 cp ~/.aws/credentials s3://data-mesh-poc-yourname-emr-configuration-scripts --region us-east-2
 # aws s3 cp YourDataProduct-assembly-0.1.jar s3://data-mesh-poc-yourname-emr-configuration-scripts/
-``` 
+```
 
 ### Running Terraform Configuration
 
 Open `terraform/main.tf` and make sure the following modules are active: vpc, glue, ecr, iam, rds, eks, s3
 
-In `terraform/terraform.tfvars` replace the `project_name` and `environment` value with your own unique values. 
+In `terraform/terraform.tfvars` replace the `project_name` and `environment` value with your own unique values.
 
 ```shell
 cd terraform
@@ -56,10 +60,12 @@ terraform plan
 # Applying Terraform Plan
 terraform apply
 ```
+
 ___
 
 ### Upload Raw Data for Processing
-Upload your raw data into the `/raw` folder of the S3 bucket created by the `terraform apply` command for your product's domain.  
+
+Upload your raw data into the `/raw` folder of the S3 bucket created by the `terraform apply` command for your product's domain.
 
 ```shell script
 aws s3 cp <raw_data_files> s3://data-mesh-poc-yourname-citi-bike-data-bucket/raw --recursive
@@ -77,30 +83,36 @@ kubectl config set-context <eks_cluster_arn>
 ```
 
 ##### Verify kubectl
+
 ```shell
 kubectl get nodes
 ```
+
 ___
 
 ### Building DAG Docker Images
 
 File to change: `docker/python_aws/controllers/EmrClusterController.py`
+
 - Update `LogUri` with s3 bucket to use for EMR logging (Example: `s3://data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
 
 File to change: `docker/python_aws/main.py`
+
 - Update `s3_jar_path` (Example: `s3://data-mesh-poc-yourname-emr-configuration-scripts/CitiBikeDataProduct-assembly-0.1.jar`)
 - Update `s3_credentials_path` (Example: `s3://data-mesh-poc-yourname-emr-configuration-scripts/credentials`)
 - Update `subnet_id` (Example: `subnet-035a65a4ea1d2ed85`)
 
 File to change: `docker/airflow/dags/citi-bike-pipeline.py`
+
 - Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
+
 - Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 #### Configure CPU and Memory Allocation for Worker Nodes
 
-Set the KubernetesPodOperator `resources` parameter in the `create_cluster_task` of each data product (ex: citi-bike-pipeline.py and covid-pipeline-pod-operator.py) to allocate cluster resources as needed. 
+Set the KubernetesPodOperator `resources` parameter in the `create_cluster_task` of each data product (ex: citi-bike-pipeline.py and covid-pipeline-pod-operator.py) to allocate cluster resources as needed.
 
 ```python
 create_cluster_task = KubernetesPodOperator(namespace='default',
@@ -112,40 +124,51 @@ create_cluster_task = KubernetesPodOperator(namespace='default',
 ```
 
 File to change: `docker/python_aws/scripts/build-deploy-python-aws.sh`
+
 - Update `REGION` (Example: `us-east-2`)
 - Update `ECR_REPO_URL` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 Now run that script to build and deploy DAG Images to AWS ECR...
+
 ```shell
 ./docker/python_aws/scripts/build-deploy-python-aws.sh
 ```
+
 ___
 
 ### Building Airflow Docker Image
+
 File to change: `docker/airflow/dags/controllers/EmrClusterController.py`
+
 - Update `LogUri` with s3 bucket to use for EMR logging (Example: `s3://data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
 
 File to change: `docker/airflow/airflow.cfg`
+
 - Update `remote_base_log_folder` with s3 bucket to use for Airflow logging (Example: `s3://data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
 
 File to change: `docker/airflow/scripts/build-deploy-airflow.sh`
+
 - Update `REGION` (Example: `us-east-2`)
-- Update `ECR_REPO_URL` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
+- Update `ECR_REPO_URI` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
 
 To build and deploy a working airflow docker image to AWS ECR run following script...
+
 ```shell
 ./docker/airflow/scripts/build-deploy-airflow.sh
 ```
-This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow to EKS using helm charts. 
+
+This command will build and deploy the docker image to ECR. Once the image is uploaded to ECR, you can deploy the airflow to EKS using helm charts.
 ___
 
 ### Deploying Airflow to EKS using Helm Charts
 
 File to change: `helm/airflow/values.yaml`
+
 - Update `dags_image.repository` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
 - Update `airflow.postgres.host` with your RDS endpoint (Example: `data-mesh-poc-yourname-airflow.ci41jz4lefxv.us-east-2.rds.amazonaws.com`)
 
 File to change: `helm/airflow/templates/secrets.yaml` (Must be base64 encoded values!)
+
 - Update `aws_access_key_id` (Use terminal output of `echo -n "YourAwsAccessKeyId" | base64`)
 - Update `aws_secret_access_key` (Use terminal output of `echo -n "YourAwsSecretAccessKey" | base64`)
 - Update `POSTGRES_PASSWORD` (Use terminal output of `echo -n "YourPostgresPassword" | base64`)
@@ -168,6 +191,7 @@ helm install datamesh-airflow helm/airflow
 # Uninstall
 helm uninstall datamesh-airflow
 ```
+
 ___
 
 ### Trigger DAG from Airflow UI
@@ -175,6 +199,7 @@ ___
 ```shell
 kubectl get services
 ```
+
 This command should display the EXTERNAL-IP of your airflow cluster. Visit this URL into your browser to open the Airflow UI and trigger your DAG.
 ___
 
@@ -195,6 +220,7 @@ Open `terraform/main.tf` and remove or comment out the `eks` module (Leave the f
 ```
 
 Then...
+
 ```shell
 cd terraform
 
@@ -202,6 +228,7 @@ terraform plan
 
 terraform apply
 ```
+
 ___
 
 #### Create Local K8s Cluster using Kind
@@ -215,33 +242,43 @@ mv ./kind /usr/local/kind
 ```
 
 To create a local K8s cluster with a docker registry container, run the following script...
+
 ```shell
 ./kind-with-registry.sh
 ```
+
 ___
 
 File to change: `docker/airflow/dags/citi-bike-pipeline.py`
+
 - Update `ecr_image` with `localhost:5000/python-aws`
 
 File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
+
 - Update `ecr_image` with `localhost:5000/python-aws`
+
 ---
 
 Build, tag, and push your Airflow image to your cluster's registry by running the following script...
+
 ```shell
 ./docker/airflow/scripts/buildLocal.sh
 ```
+
 ___
 
 Build, tag, and push your DAG image to your cluster's registry by running the following script...
+
 ```shell
 ./docker/python_aws/scripts/buildLocal.sh
 ```
+
 ___
 
 #### Deploy PostgreSQL DB in Local K8s Cluster
 
 File to change: helm/airflow/values.yaml
+
 - Change `dags_image.repository` to `localhost:5000/airflow-local`
 - Change `airflow.postgres.host` to `postgres-local-postgresql`
 

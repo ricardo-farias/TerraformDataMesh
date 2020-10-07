@@ -60,7 +60,8 @@ spark_submit_task = KubernetesPodOperator(
     dag=dag
 )
 
-terminate_cluster_task = KubernetesPodOperator(namespace='fargate',
+terminate_cluster_task = KubernetesPodOperator(
+    namespace='covid',
     name="terminate_job",
     task_id="terminate_job",
     image=ecr_image,
