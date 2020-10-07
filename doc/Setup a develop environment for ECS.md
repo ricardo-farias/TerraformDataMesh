@@ -128,7 +128,7 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
 
     ```bash
     terraform plan               # to show all the resources that will be created
-    echo yes | terraform apply   # to build the cloud infrastructure
+    echo yes | terraform apply    # to build the cloud infrastructure
     ```
 
 1. Deploy DAGs to AWS
