@@ -40,7 +40,7 @@ locals {
 
 resource "aws_s3_bucket" "create_bucket" {
   for_each = local.bucket_list_map
-    bucket = each.value.bucket
+    bucket = "${var.project_name}-${var.environment}-${each.value.bucket}"
     force_destroy = false
     tags = {
       Terraform = "true"
@@ -51,7 +51,7 @@ resource "aws_s3_bucket" "create_bucket" {
 
 resource "aws_s3_bucket_object" "create_folder" {
   for_each = local.source_domain_config_map
-    bucket = each.value.bucket
+    bucket = "${var.project_name}-${var.environment}-${each.value.bucket}"
     key = each.value.key
     force_destroy = false
 
