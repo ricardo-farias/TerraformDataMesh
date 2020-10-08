@@ -1,5 +1,5 @@
 source_domain:
-- bucket: data-mesh-poc-ENVIRONMENT-data-mesh-covid-domain
+- bucket: data-mesh-covid-domain
   product:
   - italy/
   - us/
@@ -7,7 +7,7 @@ source_domain:
   - raw/
   - canonical/
   - error/
-- bucket: data-mesh-poc-ENVIRONMENT-citi-bike-data-bucket
+- bucket: citi-bike-data-bucket
   product:
   - bike-data/
   folder:
@@ -15,5 +15,5 @@ source_domain:
   - canonical/
   - error/
 non_source_domain:
-- bucket: data-mesh-poc-ENVIRONMENT-athena-data-mesh-output-bucket
-- bucket: data-mesh-poc-ENVIRONMENT-emr-data-mesh-logging-bucket
+- bucket: athena-data-mesh-output-bucket
+- bucket: emr-data-mesh-logging-bucket
