@@ -35,7 +35,7 @@ resource "aws_emr_cluster" "data-mesh-cluster" {
     action_on_failure = "CONTINUE"
     hadoop_jar_step {
       jar  = "command-runner.jar"
-      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/credentials", "/home/hadoop/.aws/"]
+      args = ["aws", "s3", "cp", "s3://data-mesh-poc-ENVIRONMENT-emr-configuration-scripts/credentials", "/home/hadoop/.aws/"]
     }
   }
   step {
@@ -43,7 +43,7 @@ resource "aws_emr_cluster" "data-mesh-cluster" {
     action_on_failure = "CONTINUE"
     hadoop_jar_step {
       jar  = "command-runner.jar"
-      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar", "/home/hadoop/"]
+      args = ["aws", "s3", "cp", "s3://data-mesh-poc-ENVIRONMENT-emr-configuration-scripts/SparkPractice-assembly-0.1.jar", "/home/hadoop/"]
     }
   }
   step {

@@ -1,6 +1,6 @@
-# Project Configuration
+# Project Configuration w/ bugfix
 project_name = "data-mesh-poc"
-environment = "aayush"
+environment = "ENVIRONMENT"
 aws_region = "us-east-2"
 
 # EMR Configuration
