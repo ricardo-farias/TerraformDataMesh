@@ -46,7 +46,7 @@ resource "aws_s3_bucket" "create_bucket" {
       Terraform = "true"
       Project = var.project_name
       Environment = var.environment
-   }
+    }
 }
 
 resource "aws_s3_bucket_object" "create_folder" {
