@@ -37,8 +37,7 @@ We have to do 3 things to prevent important changes from being overwritten
 
 1. compare the feature branch to the develop branch
 2. merge in code that will be overwritten
-3. commit changes to the feature branch
-4. submit a pull request
+3. save adjustments to the feature branch
 
 ```shell
 # defaults
@@ -66,12 +65,10 @@ git difftool --cached $THEIR_BRANCH
 #    - by getting the list of altered files and editing in the IDE
 git difftool --cached --name-only | xargs -I% $EDITOR "%"
 
-# 3. commit changes to the feature branch
+# 3. save adjustments to the feature branch
 git reset --soft $OUR_BRANCH; git checkout $OUR_BRANCH                     # bring edited files into feature branch
 git commit -a -m "Adjust $OUR_BRANCH for compatibility with $THEIR_BRANCH"
 git push -u origin
-
-# 4. submit a pull request
 
 # cleanup
 git branch -d wip_compare_upstream
