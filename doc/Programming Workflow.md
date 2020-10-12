@@ -12,7 +12,7 @@ why:
 
 why:
 
-### c: The uncertainty of the final directory structure results in files shifting
+- developers are merging code without verifying the resulting change set.
 
 ## Principles
 
@@ -33,16 +33,48 @@ why:
 
 ### it should be easy to determine if upstream changes will conflict with local code
 
-workflow to diff upstream develop branch with local feature branch
+We have to do 3 things to prevent important changes from being overwritten
+
+1. compare the feature branch to the develop branch
+2. merge in code that will be overwritten
+3. commit changes to the feature branch
+4. submit a pull request
 
 ```shell
+# defaults
+CURRENT_BRANCH=`git branch | grep '\*' | awk '{print $2}'`
+DEVELOP_BRANCH=origin/master
+EDITOR=code
+
+# configure
+OUR_BRANCH=$CURRENT_BRANCH
+THEIR_BRANCH=$DEVELOP_BRANCH
+
+# setup
 git fetch origin --prune
-git checkout feature_branch -B wip_compare_upstream          # setup
-git add -u                                                   # only add tracked files
-git reset --soft `git merge-base --fork-point master head`   # squash the local branch into one commit. put that commit in STAGED INDEX
-git difftool --cached origin/master                          # compare the STAGED INDEX to upstream develop
-git reset --soft feature_branch; git checkout feature_branch # bring edited files into feature branch
-git branch -d wip_compare_upstream                           # cleanup
+git checkout $OUR_BRANCH -B wip_compare_upstream
+
+# 1. compare the feature branch to the develop branch
+git add -u                                                                 # only add tracked files
+git reset --soft `git merge-base --fork-point $DEVELOP_BRANCH $OUR_BRANCH` # squash the local branch into one commit. put that commit in STAGED INDEX
+git difftool --cached $THEIR_BRANCH                                        # compare the STAGED INDEX to THEIR_BRANCH
+
+# 2. fix any code that will be overwritten
+#    - by editing the files during compare
+git difftool --cached $THEIR_BRANCH
+
+#    - by getting the list of altered files and editing in the IDE
+git difftool --cached --name-only | xargs -I% $EDITOR "%"
+
+# 3. commit changes to the feature branch
+git reset --soft $OUR_BRANCH; git checkout $OUR_BRANCH                     # bring edited files into feature branch
+git commit -a -m "Adjust $OUR_BRANCH for compatibility with $THEIR_BRANCH"
+git push -u origin
+
+# 4. submit a pull request
+
+# cleanup
+git branch -d wip_compare_upstream
 ```
 
 ### it is better to resolve code conflicts in a feature branch than in the develop branch
@@ -65,7 +97,7 @@ three options for bringing in upstream changes:
 - Use upstream develop as the start point of feature branches.
 
   ```shell
-  git checkout origin/master -b feature_branch
+  git checkout origin/master --no-track -b feature_branch; git push -u origin
   ```
 
 ## References
