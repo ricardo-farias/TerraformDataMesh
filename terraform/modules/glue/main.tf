@@ -21,7 +21,12 @@ resource "null_resource" "lakeFormation" {
   }
 
   provisioner "local-exec" {
-    command = "python3 ../lakeFormation/LakeFormationController.py create $PARAMS"
+    command = <<EOT
+      source ../venv/bin/activate
+      pip3 install boto3
+      python3 ../lakeFormation/LakeFormationController.py create $PARAMS
+      deactivate
+    EOT
     environment = {
       PARAMS = jsonencode(
         {
@@ -31,7 +36,7 @@ resource "null_resource" "lakeFormation" {
           s3_domain_locations = [
             "${var.project_name}-${var.environment}-${var.covid_domain_location_arn}/covid-italy",
             "${var.project_name}-${var.environment}-${var.covid_domain_location_arn}/covid-us",
-            "${var.project_name}-${var.environment}-${var.bike_domain_location_arn}"
+            "${var.project_name}-${var.environment}-${var.bike_domain_location_arn}/bike-data"
           ]
         }
       )
@@ -40,7 +45,12 @@ resource "null_resource" "lakeFormation" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "python3 ../lakeFormation/LakeFormationController.py destroy $PARAMS"
+    command = <<EOT
+      source ../venv/bin/activate
+      pip3 install boto3
+      python3 ../lakeFormation/LakeFormationController.py destroy $PARAMS
+      deactivate
+    EOT
     environment = {
       PARAMS = jsonencode(
       {
@@ -50,7 +60,7 @@ resource "null_resource" "lakeFormation" {
         s3_domain_locations = [
           "${self.triggers.project_environment_tf}-${self.triggers.covid_location}/covid-italy",
           "${self.triggers.project_environment_tf}-${self.triggers.covid_location}/covid-us",
-          "${self.triggers.project_environment_tf}-${self.triggers.bike_location}"
+          "${self.triggers.project_environment_tf}-${self.triggers.bike_location}/bike-data"
         ]
       }
       )
