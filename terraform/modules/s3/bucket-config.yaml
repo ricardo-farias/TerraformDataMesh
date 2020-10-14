@@ -1,5 +1,5 @@
 source_domain:
-- bucket: data-mesh-covid-domain
+- bucket: covid-domain
   product:
   - italy/
   - us/
@@ -7,7 +7,7 @@ source_domain:
   - raw/
   - canonical/
   - error/
-- bucket: citi-bike-data-bucket
+- bucket: citi-bike-domain
   product:
   - bike-data/
   folder:

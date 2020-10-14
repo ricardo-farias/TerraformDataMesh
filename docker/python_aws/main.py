@@ -62,8 +62,8 @@ if __name__ == "__main__":
 
     elif os.environ["DATA_PRODUCT"]=='covid':
         data_product = "covid"
-        s3_jar_path = 's3://data-mesh-poc-aayush-emr-configuration-scripts/SparkPractice-assembly-0.1.jar'
-        jar_path = '/home/hadoop/SparkPractice-assembly-0.1.jar'
+        s3_jar_path = 's3://data-mesh-poc-aayush-emr-configuration-scripts/CovidDataProduct-assembly-0.1.jar'
+        jar_path = '/home/hadoop/CovidDataProduct-assembly-0.1.jar'
     else:
         raise RuntimeError("Invalid ENV Variable - Please set appropriate DATA_PRODUCT ENV")
 
