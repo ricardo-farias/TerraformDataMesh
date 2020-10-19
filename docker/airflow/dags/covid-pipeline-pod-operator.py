@@ -30,6 +30,7 @@ create_cluster_task = KubernetesPodOperator(
     do_xcom_push=True,
     secrets=[aws_access_key_id, aws_secret_access_key],
     env_vars={'DATA_PRODUCT':'covid'},
+    resources = {'request_cpu': '0.50', 'request_memory': '0.7Gi'},
     dag=dag
 )
 
@@ -60,7 +61,8 @@ spark_submit_task = KubernetesPodOperator(
     dag=dag
 )
 
-terminate_cluster_task = KubernetesPodOperator(namespace='fargate',
+terminate_cluster_task = KubernetesPodOperator(
+    namespace='covid',
     name="terminate_job",
     task_id="terminate_job",
     image=ecr_image,

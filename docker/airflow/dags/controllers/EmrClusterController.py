@@ -59,10 +59,10 @@ class EmrClusterController:
         response = EmrClusterController.connection.run_job_flow(
             Name=name,
             ReleaseLabel=release,
-            LogUri='s3://data-mesh-poc-aperson-emr-data-mesh-logging-bucket',
+            LogUri='s3://data-mesh-poc-ENVIRONMENT-emr-data-mesh-logging-bucket',
             Applications=[
                 {'Name': 'hadoop'},
-                { 'Name': 'spark'},
+                {'Name': 'spark'},
                 {'Name': 'hive'},
                 {'Name': 'livy'},
                 {'Name': 'zeppelin'}

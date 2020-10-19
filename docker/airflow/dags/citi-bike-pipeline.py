@@ -28,7 +28,7 @@ create_cluster_task = KubernetesPodOperator(
     image_pull_policy='Always',
     arguments=["create_cluster"],
     do_xcom_push=True,
-    secrets=[aws_access_key_id, aws_secret_access_key],    
+    secrets=[aws_access_key_id, aws_secret_access_key],
     env_vars={'DATA_PRODUCT':'citi_bike'},
     dag=dag
 )
@@ -41,7 +41,7 @@ configure_job = KubernetesPodOperator(
     image_pull_policy='Always',
     arguments=["configure_job",
     "{{ task_instance.xcom_pull(task_ids='create_cluster', key='return_value')['clusterId'] }}"],
-    do_xcom_push=False,    
+    do_xcom_push=False,
     secrets=[aws_access_key_id, aws_secret_access_key],
     env_vars={'DATA_PRODUCT':'citi_bike'},
     dag=dag
@@ -49,7 +49,7 @@ configure_job = KubernetesPodOperator(
 
 spark_submit_task = KubernetesPodOperator(
     namespace='citi-bike',
-    task_id="submit_job",    
+    task_id="submit_job",
     name="submit_job",
     image=ecr_image,
     image_pull_policy='Always',
