@@ -104,3 +104,31 @@ three options for bringing in upstream changes:
 - [git SCM](https://git-scm.com/)
 - [Pro Git book by Scott Chacon and Ben Straub](https://git-scm.com/book/en/v2)
 - [Advanced Workflows](http://schacon.github.io/git/gitworkflows.html)
+
+=== to add
+
+origin/fix_remove_s3_folder_leading_empty_space
+their_branch=origin/bug_fixes; echo $their_branch
+
+--- update our branch to commits in remote branches
+
+# setup
+
+our_branch_head=4c08e8c # save current head
+our_branch=83_resource_name_config
+their_branch=origin/fix_remove_s3_folder_leading_empty_space
+
+# update index
+
+git fetch --prune # update remote information
+git branch -r
+
+# compare
+
+git difftool $our_branch $their_branch
+
+git cherry-pick --no-commit $their_branch
+
+gaa; gc --amend
+gc -a -m "Applied buxfix patch 58a4704"
+git rebase origin/master 83_resource_name_config
