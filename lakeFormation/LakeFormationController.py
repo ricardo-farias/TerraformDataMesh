@@ -22,16 +22,16 @@ class LakeFormationController:
         self.add_administrator(self.lf_admin)
         self.grant_permissions(self.lf_admin, 'Database', ["ALL"], ["ALL"])
         self.grant_permissions(self.lf_admin, 'Table', ["ALL"], ["ALL"])
-        self.grant_permissions(self.emr_instance_profile, 'Database', ["ALL"])
-        self.grant_permissions(self.emr_instance_profile, 'Table', ["ALL"])
+        self.grant_permissions(self.emr_instance_profile, 'Database', ["ALL"], ["ALL"])
+        self.grant_permissions(self.emr_instance_profile, 'Table', ["ALL"], ['ALL'])
         self.register_all_resources(self.s3_domain_locations)
 
     def destroy_lake_formation(self):
         self.deregister_all_resources(self.s3_domain_locations)
         # self.remove_permissions(self.lf_admin, 'Database', ["ALL"], ["ALL"])
         self.remove_permissions(self.lf_admin, 'Table', ["ALL"], ["ALL"])
-        self.remove_permissions(self.emr_instance_profile, 'Database', ["ALL"])
-        self.remove_permissions(self.emr_instance_profile, 'Table', ["ALL"])
+        self.remove_permissions(self.emr_instance_profile, 'Database', ["ALL"], ["ALL"])
+        self.remove_permissions(self.emr_instance_profile, 'Table', ["ALL"], ['ALL'])
         # self.remove_administrator(self.lf_admin)
 
 
