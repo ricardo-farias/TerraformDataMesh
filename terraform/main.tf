@@ -28,11 +28,11 @@ module "ecr" {
 
 module "iam" {
   source = "./modules/iam"
-  athena_bucket_name = local.bucket_config_data_yaml.non_source_domain[0].bucket
-  covid_data_bucket_name = local.bucket_config_data_yaml.source_domain[0].bucket
+  athena_bucket_name = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.non_source_domain[0].bucket}"
+  covid_data_bucket_name = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[0].bucket}"
   glue_catalog_id = module.glue.glue_catalog_id
   glue_catalog_name = module.glue.glue_database_name
-  citi_bike_bucket_name = local.bucket_config_data_yaml.source_domain[1].bucket
+  citi_bike_bucket_name = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[1].bucket}"
   project_name = var.project_name
   environment = var.environment
   aws_region = var.aws_region
@@ -76,7 +76,7 @@ module "eks" {
 //  name = var.name
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
-//} 
+//}
 
 module "s3" {
   source = "./modules/s3"

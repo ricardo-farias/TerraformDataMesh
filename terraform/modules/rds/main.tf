@@ -17,7 +17,7 @@ resource "aws_db_instance" "airflow" {
   storage_type           = "gp2"
   engine                 = var.db_engine
   engine_version         = var.engine_version
-  instance_class         = var.instance_type  
+  instance_class         = var.instance_type
   skip_final_snapshot    = true
   publicly_accessible    = var.accessible
   db_subnet_group_name   = aws_db_subnet_group.airflow_subnet_group.id
@@ -31,7 +31,7 @@ resource "aws_db_instance" "airflow" {
 }
 
 resource "aws_security_group" "rds_security_group" {
-  name = "rds-security-group"
+  name = "${var.project_name}-${var.environment}-rds-security-group"
 
   description = "SG for RDS postgres servers"
   vpc_id = var.vpc_id
