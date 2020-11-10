@@ -92,11 +92,11 @@ File to change: `docker/python_aws/main.py`
 - Update `s3_credentials_path` (Example: `s3://data-mesh-poc-yourname-emr-configuration-scripts/credentials`)
 - Update `subnet_id` (Example: `subnet-035a65a4ea1d2ed85`)
 
-File to change: `docker/airflow/dags/citi-bike-pipeline.py`
-- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+File to change: `docker/airflow/dags/citi-bike/citi-bike-pipeline.py`
+- Update `ecr_image` with your `platform-shared-ecr-repo-url` from outputs followed by tag `python-aws-latest` (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-yourname:python-aws-latest`)
 
-File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
-- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+File to change: `docker/airflow/dags/covid/covid-pipeline-pod-operator.py`
+- Update `ecr_image` with your `platform-shared-ecr-repo-url` from outputs followed by tag `python-aws-latest` (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-yourname:python-aws-latest`)
 
 #### Configure CPU and Memory Allocation for Worker Nodes
 
@@ -113,7 +113,7 @@ create_cluster_task = KubernetesPodOperator(namespace='default',
 
 File to change: `docker/python_aws/scripts/build-deploy-python-aws.sh`
 - Update `REGION` (Example: `us-east-2`)
-- Update `ECR_REPO_URL` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+- Update `ECR_REPO_URL` with your `platform-shared-ecr-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-yourname`)
 
 Now run that script to build and deploy DAG Images to AWS ECR...
 ```shell
@@ -130,7 +130,7 @@ File to change: `docker/airflow/airflow.cfg`
 
 File to change: `docker/airflow/scripts/build-deploy-airflow.sh`
 - Update `REGION` (Example: `us-east-2`)
-- Update `ECR_REPO_URL` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
+- Update `ECR_REPO_URL` with your `platform-shared-ecr-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-yourname`)
 
 To build and deploy a working airflow docker image to AWS ECR run following script...
 ```shell
@@ -142,7 +142,7 @@ ___
 ### Deploying Airflow to EKS using Helm Charts
 
 File to change: `helm/airflow/values.yaml`
-- Update `dags_image.repository` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
+- Update `dags_image.repository` with your `platform-shared-ecr-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-platform-shared-yourname`)
 - Update `airflow.postgres.host` with your RDS endpoint (Example: `data-mesh-poc-yourname-airflow.ci41jz4lefxv.us-east-2.rds.amazonaws.com`)
 
 File to change: `helm/airflow/templates/secrets.yaml` (Must be base64 encoded values!)
@@ -220,10 +220,10 @@ To create a local K8s cluster with a docker registry container, run the followin
 ```
 ___
 
-File to change: `docker/airflow/dags/citi-bike-pipeline.py`
+File to change: `docker/airflow/dags/citi-bike/citi-bike-pipeline.py`
 - Update `ecr_image` with `localhost:5000/python-aws`
 
-File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
+File to change: `docker/airflow/dags/covid/covid-pipeline-pod-operator.py`
 - Update `ecr_image` with `localhost:5000/python-aws`
 ---
 

@@ -1,15 +1,22 @@
- output "airflow-ecr-base-repo-url" {
-   value = aws_ecr_repository.airflow-base.repository_url
+##########################
+# Platform Shared Repo URI
+##########################
+output "platform-shared-ecr-repo-url" {
+   value = aws_ecr_repository.platform-shared.repository_url
  }
 
- output "airflow-base" {
-   value = aws_ecr_repository.airflow-base.id
+########################
+# Covid Product Repo URI
+########################
+ output "covid-ecr-repo-url" {
+   value = aws_ecr_repository.covid.repository_url
  }
 
-output "airflow-ecr-dags-repo-url" {
-   value = aws_ecr_repository.airflow-dags.repository_url
+############################
+# Citi-bike Product Repo URI
+############################
+ output "citi-bike-ecr-repo-url" {
+   value = aws_ecr_repository.citi-bike.repository_url
  }
 
- output "airflow-dags" {
-   value = aws_ecr_repository.airflow-dags.id
- }
+
