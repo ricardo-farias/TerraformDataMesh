@@ -1,5 +1,5 @@
 resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
-  name = "${var.project_name}${var.environment}${var.database_name}"
+  name = replace("${var.project_name}-${var.environment}-${var.database_name}", "-", "_")
 }
 
 data "aws_caller_identity" "current" {}
@@ -15,12 +15,12 @@ resource "null_resource" "lakeFormation" {
     db_name_tf = aws_glue_catalog_database.aws_glue_catalog_database.name,
     account_id_tf = data.aws_caller_identity.current.account_id,
     lf_admin_tf = var.lake_formation_admin,
-    project_environment_tf = "${var.project_name}-${var.environment}",
     covid_location = var.covid_domain_location_arn,
     bike_location = var.bike_domain_location_arn
   }
 
   provisioner "local-exec" {
+    # TODO refactor venv out of setup. put correct python version inside docker image
     command = <<EOT
       source ../venv/bin/activate
       pip3 install boto3
@@ -34,9 +34,9 @@ resource "null_resource" "lakeFormation" {
           account_id = data.aws_caller_identity.current.account_id,
           lf_admin = var.lake_formation_admin,
           s3_domain_locations = [
-            "${var.project_name}-${var.environment}-${var.covid_domain_location_arn}/covid-italy",
-            "${var.project_name}-${var.environment}-${var.covid_domain_location_arn}/covid-us",
-            "${var.project_name}-${var.environment}-${var.bike_domain_location_arn}/bike-data"
+            "${self.triggers.covid_location}/covid-italy",
+            "${self.triggers.covid_location}/covid-us",
+            "${self.triggers.bike_location}/bike-data"
           ]
         }
       )
@@ -45,6 +45,7 @@ resource "null_resource" "lakeFormation" {
 
   provisioner "local-exec" {
     when    = destroy
+    # TODO refactor venv out of setup. put correct python version inside docker image
     command = <<EOT
       source ../venv/bin/activate
       pip3 install boto3
@@ -58,9 +59,9 @@ resource "null_resource" "lakeFormation" {
         account_id = self.triggers.account_id_tf,
         lf_admin = self.triggers.lf_admin_tf,
         s3_domain_locations = [
-          "${self.triggers.project_environment_tf}-${self.triggers.covid_location}/covid-italy",
-          "${self.triggers.project_environment_tf}-${self.triggers.covid_location}/covid-us",
-          "${self.triggers.project_environment_tf}-${self.triggers.bike_location}/bike-data"
+          "${self.triggers.covid_location}/covid-italy",
+          "${self.triggers.covid_location}/covid-us",
+          "${self.triggers.bike_location}/bike-data"
         ]
       }
       )

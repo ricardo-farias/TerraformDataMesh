@@ -106,11 +106,11 @@ This repo is used to setup the infrastructure for the Spark Cluster using Amazon
 
     cat <<EOF > /tmp/replace.sed; chmod +x /tmp/replace.sed
     #!$(which sed) -f
-    s/athena-data-mesh-output-bucket/$BUCKET_PREFIX-athena-data-mesh-output-bucket/g
+    s/athena-output-bucket/$BUCKET_PREFIX-athena-output-bucket/g
     s/citi-bike-data-bucket/$BUCKET_PREFIX-citi-bike-data-bucket/g
     s/data-mesh-covid-domain/$BUCKET_PREFIX-data-mesh-covid-domain/g
     s/emr-configuration-scripts/$BUCKET_PREFIX-emr-configuration-scripts/g
-    s/emr-data-mesh-logging-bucket/$BUCKET_PREFIX-emr-data-mesh-logging-bucket/g
+    s/emr-logging-bucket/$BUCKET_PREFIX-emr-logging-bucket/g
     EOF
     ```
 

@@ -43,7 +43,7 @@ resource "aws_emr_cluster" "data-mesh-cluster" {
     action_on_failure = "CONTINUE"
     hadoop_jar_step {
       jar  = "command-runner.jar"
-      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/SparkPractice-assembly-0.1.jar", "/home/hadoop/"]
+      args = ["aws", "s3", "cp", "s3://emr-configuration-scripts/CovidDataProduct-assembly-0.1.jar", "/home/hadoop/"]
     }
   }
   step {
@@ -51,7 +51,7 @@ resource "aws_emr_cluster" "data-mesh-cluster" {
     action_on_failure = "CONTINUE"
     hadoop_jar_step {
       jar = "command-runner.jar"
-      args = ["spark-submit", "--class", "com.ricardo.farias.App", "/home/hadoop/SparkPractice-assembly-0.1.jar"]
+      args = ["spark-submit", "--class", "com.ricardo.farias.App", "/home/hadoop/CovidDataProduct-assembly-0.1.jar"]
     }
   }
 

@@ -192,7 +192,9 @@ if __name__ == "__main__":
         )
     else:
         params = json.loads(sys.argv[2])
+
     lakeFormationController = LakeFormationController(params)
+
     if create_or_destroy == 'create':
         LakeFormationController.create_lake_formation(lakeFormationController)
     elif create_or_destroy == 'destroy':

@@ -7,7 +7,7 @@ source_domain:
   - raw/
   - canonical/
   - error/
-- bucket: bike-domain
+- bucket: citi-bike-domain
   product:
   - bike-data/
   folder:
@@ -15,5 +15,5 @@ source_domain:
   - canonical/
   - error/
 non_source_domain:
-- bucket: athena-data-mesh-output-bucket
-- bucket: emr-data-mesh-logging-bucket
+- bucket: athena-output-bucket
+- bucket: emr-logging-bucket

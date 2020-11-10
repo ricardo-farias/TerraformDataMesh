@@ -1,6 +1,6 @@
 # Project Configuration
-project_name = "datamesh"
-environment = "rg"
+project_name = "data-mesh-poc"
+environment = "aayush"
 aws_region = "us-east-2"
 
 # EMR Configuration

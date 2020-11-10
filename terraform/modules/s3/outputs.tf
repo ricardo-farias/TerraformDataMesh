@@ -1,3 +1,4 @@
+
 output "source_domain_config_map_result" {
   value = local.source_domain_config_map
 }
@@ -13,7 +14,3 @@ output "source_domain_bucket_list_map_result" {
 output "bucket_list_map_result" {
   value = local.bucket_list_map
 }
-
-//output "citi-bike-domain-location-arn" {
-//  value = local.source_domain_config_map.data-mesh-covid-domain
-//}

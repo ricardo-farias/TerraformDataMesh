@@ -35,4 +35,3 @@ output "airflow-ecr-base-repo-url" {
 output "airflow-ecr-dags-repo-url" {
   value = module.ecr.airflow-ecr-dags-repo-url
 }
-

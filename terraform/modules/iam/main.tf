@@ -266,4 +266,3 @@ resource "aws_iam_user_group_membership" "citi-bike-team-assignment" {
   user = aws_iam_user.citi-bike-team-member-user.name
   groups = [aws_iam_group.citi-bike-team-group.name]
 }
-
