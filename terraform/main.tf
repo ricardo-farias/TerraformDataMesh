@@ -14,6 +14,9 @@ module "glue" {
   database_name = var.glue_db_name
   project_name = var.project_name
   environment = var.environment
+  lake_formation_admin = var.lake_formation_admin
+  covid_domain_location_arn = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[0].bucket}"
+  bike_domain_location_arn = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[1].bucket}"
 }
 
 # module "security" {
@@ -21,9 +24,9 @@ module "glue" {
 # }
 
 module "ecr" {
-   source = "./modules/ecr"
-   project_name = var.project_name
-   environment = var.environment
+  source = "./modules/ecr"
+  project_name = var.project_name
+  environment = var.environment
 }
 
 module "iam" {
@@ -38,16 +41,16 @@ module "iam" {
   aws_region = var.aws_region
 }
 
- module "rds" {
-   source = "./modules/rds"
-   db_name = "postgres"
-   username = "airflow"
-   password = "airflow123456"
-   vpc_id = module.vpc.vpc_id
-   private_subnets = module.vpc.private_subnets
-   project_name = var.project_name
-   environment = var.environment
- }
+module "rds" {
+  source = "./modules/rds"
+  db_name = "postgres"
+  username = "airflow"
+  password = "airflow123456"
+  vpc_id = module.vpc.vpc_id
+  private_subnets = module.vpc.private_subnets
+  project_name = var.project_name
+  environment = var.environment
+}
 
 module "eks" {
   source = "./modules/eks"
@@ -56,6 +59,16 @@ module "eks" {
   project_name = var.project_name
   environment = var.environment
 }
+
+module "s3" {
+  source = "./modules/s3"
+  project_name = var.project_name
+  environment = var.environment
+}
+
+# module "security" {
+#   source = "./modules/security"
+# }
 
 # module "cloudwatch" {
 #   source = "./modules/cloudwatch"
@@ -77,12 +90,6 @@ module "eks" {
 //  release_label = var.release_label
 //  subnet_id = module.security.subnet_id
 //}
-
-module "s3" {
-  source = "./modules/s3"
-  project_name = var.project_name
-  environment = var.environment
-}
 
 // module "load_balancer" {
 //   source = "./modules/load-balancer"

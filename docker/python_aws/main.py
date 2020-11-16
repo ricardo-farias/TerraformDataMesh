@@ -80,5 +80,5 @@ if __name__ == "__main__":
     elif selection == 'terminate_cluster':
         terminate_cluster(sys.argv[2])
     else:        
-        print ("Invalid Options")
+        print("Invalid Options")
         exit(-1)
