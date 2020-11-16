@@ -19,6 +19,10 @@ module "glue" {
   bike_domain_location_arn = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[1].bucket}"
 }
 
+# module "security" {
+#   source = "./modules/security"
+# }
+
 module "ecr" {
   source = "./modules/ecr"
   project_name = var.project_name
