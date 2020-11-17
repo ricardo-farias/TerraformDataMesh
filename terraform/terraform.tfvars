@@ -1,6 +1,6 @@
 # Project Configuration
 project_name = "data-mesh-poc"
-environment = "aayush"
+environment = "<add your name>"
 aws_region = "us-east-2"
 
 # EMR Configuration

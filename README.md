@@ -30,11 +30,11 @@ ___
 Create a S3 bucket from the AWS console to hold data product jar and credential files. Upload your files to the S3 bucket.
 
 ```shell script
-aws s3 cp ~/.aws/credentials s3://<config_bucket_name> --region us-east-2
+aws s3 cp ~/.aws/credentials s3://<config_bucket_name> --region <aws region>
 aws s3 cp <jar_file> s3://<config_bucket_name>/
 
 # Example
-# aws s3 cp ~/.aws/credentials s3://data-mesh-poc-yourname-emr-configuration-scripts --region us-east-2
+# aws s3 cp ~/.aws/credentials s3://data-mesh-poc-yourname-emr-configuration-scripts --region <aws region>
 # aws s3 cp YourDataProduct-assembly-0.1.jar s3://data-mesh-poc-yourname-emr-configuration-scripts/
 ``` 
 
@@ -72,8 +72,8 @@ aws eks --region us-east-2 update-kubeconfig --name <cluster_name>
 kubectl config set-context <eks_cluster_arn>
 
 # Example
-# aws eks --region us-east-2 update-kubeconfig --name data-mesh-poc-yourname-cluster
-# kubectl config set-context arn:aws:eks:us-east-2:161578411275:cluster/data-mesh-poc-yourname-cluster
+# aws eks --region <aws region> update-kubeconfig --name data-mesh-poc-yourname-cluster
+# kubectl config set-context arn:aws:eks:<aws region>:<aws account number>:cluster/data-mesh-poc-yourname-cluster
 ```
 
 ##### Verify kubectl
@@ -90,13 +90,13 @@ File to change: `docker/python_aws/controllers/EmrClusterController.py`
 File to change: `docker/python_aws/main.py`
 - Update `s3_jar_path` (Example: `s3://data-mesh-poc-yourname-emr-configuration-scripts/CitiBikeDataProduct-assembly-0.1.jar`)
 - Update `s3_credentials_path` (Example: `s3://data-mesh-poc-yourname-emr-configuration-scripts/credentials`)
-- Update `subnet_id` (Example: `subnet-035a65a4ea1d2ed85`)
+- Update `subnet_id`
 
 File to change: `docker/airflow/dags/citi-bike-pipeline.py`
-- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `<aws account number>.dkr.ecr.<aws region>.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 File to change: `docker/airflow/dags/covid-pipeline-pod-operator.py`
-- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+- Update `ecr_image` with your `airflow-ecr-dags-repo-url` from outputs (Example: `<aws account number>.dkr.ecr.<aws region>.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 #### Configure CPU and Memory Allocation for Worker Nodes
 
@@ -112,8 +112,8 @@ create_cluster_task = KubernetesPodOperator(namespace='default',
 ```
 
 File to change: `docker/python_aws/scripts/build-deploy-python-aws.sh`
-- Update `REGION` (Example: `us-east-2`)
-- Update `ECR_REPO_URL` with your `airflow-ecr-dags-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
+- Update `REGION`
+- Update `ECR_REPO_URL` with your `airflow-ecr-dags-repo-url` from outputs (Example: `<aws account number>.dkr.ecr.<aws region>.amazonaws.com/data-mesh-poc-airflow-dag-yourname`)
 
 Now run that script to build and deploy DAG Images to AWS ECR...
 ```shell
@@ -129,8 +129,8 @@ File to change: `docker/airflow/airflow.cfg`
 - Update `remote_base_log_folder` with s3 bucket to use for Airflow logging (Example: `s3://data-mesh-poc-yourname-emr-data-mesh-logging-bucket`)
 
 File to change: `docker/airflow/scripts/build-deploy-airflow.sh`
-- Update `REGION` (Example: `us-east-2`)
-- Update `ECR_REPO_URL` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
+- Update `REGION`
+- Update `ECR_REPO_URL` with your `airflow-ecr-base-repo-url` from outputs (Example: `<aws account number>.dkr.ecr.<aws region>.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
 
 To build and deploy a working airflow docker image to AWS ECR run following script...
 ```shell
@@ -142,8 +142,8 @@ ___
 ### Deploying Airflow to EKS using Helm Charts
 
 File to change: `helm/airflow/values.yaml`
-- Update `dags_image.repository` with your `airflow-ecr-base-repo-url` from outputs (Example: `161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
-- Update `airflow.postgres.host` with your RDS endpoint (Example: `data-mesh-poc-yourname-airflow.ci41jz4lefxv.us-east-2.rds.amazonaws.com`)
+- Update `dags_image.repository` with your `airflow-ecr-base-repo-url` from outputs (Example: `<aws account number>.dkr.ecr.<aws region>.amazonaws.com/data-mesh-poc-airflow-base-yourname`)
+- Update `airflow.postgres.host` with your RDS endpoint (Example: `data-mesh-poc-yourname-airflow.<pass>.<aws region>.rds.amazonaws.com`)
 
 File to change: `helm/airflow/templates/secrets.yaml` (Must be base64 encoded values!)
 - Update `aws_access_key_id` (Use terminal output of `echo -n "YourAwsAccessKeyId" | base64`)
@@ -248,7 +248,7 @@ File to change: helm/airflow/values.yaml
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-helm install postgres-local --set postgresqlUsername=airflow,postgresqlPassword=airflow123456,postgresqlDatabase=postgres bitnami/postgresql
+helm install postgres-local --set postgresqlUsername=<username>,postgresqlPassword=<password>,postgresqlDatabase=postgres bitnami/postgresql
 ```
 
 To save the postgres password of the database you just created as an environment variable...
@@ -273,3 +273,4 @@ kubectl port-forward svc/airflow 8080:80
 ```
 
 In a browser, open localhost:8080 to reveal the Airflow UI and trigger the DAG.
+

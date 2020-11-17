@@ -1,12 +1,12 @@
 # URL of the Dag ECR repository
 dags_image:
-  repository: 161578411275.dkr.ecr.us-east-2.amazonaws.com/data-mesh-poc-airflow-base-aayush
+  repository: <add airflow base ecr image url>
   # repository: localhost:5000/art-airflow-local
   tag: latest
 
 airflow:
   postgres:
-    host: data-mesh-poc-aayush-airflow.ci41jz4lefxv.us-east-2.rds.amazonaws.com
+    host: <add aws rds database url>
     port: 5432
     user: airflow
     db: postgres

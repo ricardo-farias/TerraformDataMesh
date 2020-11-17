@@ -18,7 +18,7 @@ dag = DAG(
 aws_access_key_id = Secret('env', 'AWS_ACCESS_KEY_ID', 'citi-bike-secrets', 'aws_access_key_id')
 aws_secret_access_key = Secret('env', 'AWS_SECRET_ACCESS_KEY', 'citi-bike-secrets', 'aws_secret_access_key')
 
-ecr_image = "<ecr_repo_url>"
+ecr_image = "<ecr image>" # TODO Change this to your ecr dag image
 
 create_cluster_task = KubernetesPodOperator(
     namespace='citi-bike',

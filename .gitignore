@@ -44,7 +44,7 @@ kubeconfig_*
 
 # secrets
 fernet.txt
-rds_password.txt
+terraform/rds_password.txt
 *.pem
 
 # this should go in ~/.gitignore

@@ -18,7 +18,7 @@ dag = DAG(
 aws_access_key_id = Secret('env', 'AWS_ACCESS_KEY_ID', 'covid-secrets', 'aws_access_key_id')
 aws_secret_access_key = Secret('env', 'AWS_SECRET_ACCESS_KEY', 'covid-secrets', 'aws_secret_access_key')
 
-ecr_image = "020886952569.dkr.ecr.us-east-2.amazonaws.com/python-aws:latest"
+ecr_image = "<ecr image>" # TODO change this to your ecr dag image
 
 create_cluster_task = KubernetesPodOperator(
     namespace='covid',

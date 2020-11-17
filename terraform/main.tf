@@ -19,10 +19,6 @@ module "glue" {
   bike_domain_location_arn = "${var.project_name}-${var.environment}-${local.bucket_config_data_yaml.source_domain[1].bucket}"
 }
 
-# module "security" {
-#   source = "./modules/security"
-# }
-
 module "ecr" {
   source = "./modules/ecr"
   project_name = var.project_name
@@ -45,7 +41,7 @@ module "rds" {
   source = "./modules/rds"
   db_name = "postgres"
   username = "airflow"
-  password = "airflow123456"
+  password = file("rds_password.txt")
   vpc_id = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnets
   project_name = var.project_name
@@ -65,45 +61,3 @@ module "s3" {
   project_name = var.project_name
   environment = var.environment
 }
-
-# module "security" {
-#   source = "./modules/security"
-# }
-
-# module "cloudwatch" {
-#   source = "./modules/cloudwatch"
-# }
-
-//module "emr" {
-//  source = "./modules/emr"
-//  applications = var.applications
-//  core_instance_count = var.core_instance_count
-//  core_instance_type = var.core_instance_type
-//  emr_ec2_instance_profile = module.iam.emr_ec2_instance_profile
-//  emr_master_security_group = module.security.emr_master_security_group
-//  emr_service_role = module.iam.emr_service_role
-//  emr_slave_security_group = module.security.emr_slave_security_group
-//  key_name = var.key_name
-//  logging_bucket = module.logging-bucket.bucket_id
-//  master_instance_type = var.master_instance_type
-//  name = var.name
-//  release_label = var.release_label
-//  subnet_id = module.security.subnet_id
-//}
-
-// module "load_balancer" {
-//   source = "./modules/load-balancer"
-//   internal = false
-//   listener_port = "8080"
-//   listener_protocol = "HTTP"
-//   listener_type = "forward"
-//   load_balancer_name = "airflow-load-balancer"
-//   load_balancer_type = "application"
-//   security_groups = [module.security.load_balancer_security_group_id]
-//   subnets = [module.security.public_subnet_1_id, module.security.public_subnet_2_id]
-//   target_group_name = "airflow-webserver"
-//   target_group_port = "8080"
-//   target_group_protocol = "HTTP"
-//   target_group_vpc = module.security.vpc_id
-//   matcher = "200,302"
-// }
