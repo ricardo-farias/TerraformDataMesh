@@ -17,7 +17,7 @@ core_instance_count = 1
 glue_db_name = "datameshcatalogue"
 
 # Lake Formation
-lake_formation_admin = "aws-data-mesh-user"
+lake_formation_admin = "<lake formation admin goes here>"
 
 # EKS
 cluster_name = "Airflow"
