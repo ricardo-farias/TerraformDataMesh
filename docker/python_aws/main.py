@@ -51,18 +51,17 @@ if __name__ == "__main__":
 
     if os.environ["DATA_PRODUCT"] == 'citi_bike':
         data_product = "citi_bike"
-        s3_jar_path = 's3://<bucket>/CitiBikeDataProduct-assembly-0.1.jar'  # TODO Change bucket name
+        s3_jar_path = 's3://<citi_bike_bucket>/CitiBikeDataProduct-assembly-0.1.jar'  # TODO Change bucket name
         jar_path = '/home/hadoop/CitiBikeDataProduct-assembly-0.1.jar'
 
     elif os.environ["DATA_PRODUCT"] == 'covid':
         data_product = "covid"
-        s3_jar_path = 's3://<bucket>/CovidDataProduct-assembly-0.1.jar'  # TODO Change bucket name
+        s3_jar_path = 's3://<covid_bucket>/CovidDataProduct-assembly-0.1.jar'  # TODO Change bucket name
         jar_path = '/home/hadoop/CovidDataProduct-assembly-0.1.jar'
     else:
         raise RuntimeError("Invalid ENV Variable - Please set appropriate DATA_PRODUCT ENV")
 
-    subnet_id = "<subnet>"  # TODO Add subnet id
-    s3_credentials_path = "s3://<bucket>/credentials"  # TODO Change bucket name
+    subnet_id = "<public_subnet_id>"  # TODO Add subnet id
     selection = sys.argv[1]
 
     if selection == 'create_cluster':

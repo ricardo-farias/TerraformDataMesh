@@ -59,10 +59,11 @@ class EmrClusterController:
         response = EmrClusterController.connection.run_job_flow(
             Name=name,
             ReleaseLabel=release,
-            LogUri='s3://<Emr logging bucket>', # TODO Change this to your bucket name
+            # TODO Change this to your bucket name
+            LogUri='s3://<emr_logging_bucket>',
             Applications=[
                 {'Name': 'hadoop'},
-                { 'Name': 'spark'},
+                {'Name': 'spark'},
                 {'Name': 'hive'},
                 {'Name': 'livy'},
                 {'Name': 'zeppelin'}
@@ -170,7 +171,8 @@ class EmrClusterController:
     @staticmethod
     def create_spark_session(master_dns, kind='spark'):
         host = "http://" + master_dns + ":8998"
-        conf = {"hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}
+        conf = {
+            "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"}
         data = {"kind": kind, "conf": conf}
         headers = {"Content-Type": "application/json"}
         response = requests.post(host + "/sessions", data=json.dumps(data), headers=headers)

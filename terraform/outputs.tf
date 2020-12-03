@@ -1,15 +1,3 @@
-//output "id" {
-//  value = module.emr.id
-//}
-//
-//output "name" {
-//  value = module.emr.name
-//}
-//
-//output "master_public_dns" {
-//  value = module.emr.master_public_dns
-//}
-
 /* ***** VPC ***** */
 output "public_subnets" {
   value = module.vpc.public_subnets
@@ -34,4 +22,9 @@ output "airflow-ecr-base-repo-url" {
 
 output "airflow-ecr-dags-repo-url" {
   value = module.ecr.airflow-ecr-dags-repo-url
+}
+
+/* ***** RDS ***** */
+output "rds_endpoint" {
+  value = module.rds.rds_address
 }

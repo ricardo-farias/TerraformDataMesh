@@ -1,12 +1,12 @@
 # URL of the Dag ECR repository
 dags_image:
-  repository: <add airflow base ecr image url>
+  repository: "<base_ecr_image_url>"
   # repository: localhost:5000/art-airflow-local
   tag: latest
 
 airflow:
   postgres:
-    host: <add aws rds database url>
+    host: "<rds_endpoint>"
     port: 5432
     user: airflow
     db: postgres

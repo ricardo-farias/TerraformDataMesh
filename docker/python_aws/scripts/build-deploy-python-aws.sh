@@ -2,7 +2,7 @@
 
 # Config
 REGION=us-east-2
-ECR_REPO_URL=<repo_url>
+ECR_REPO_URL="<dag_ecr_image_url>"
 
 if [ $? -eq 0 ]; then
   ECR_URL=`for i in $(echo $ECR_REPO_URL | tr "/" "\n")
