@@ -17,3 +17,4 @@ source_domain:
 non_source_domain:
 - bucket: athena-output-bucket
 - bucket: emr-logging-bucket
+- bucket: emr-jar-bucket
