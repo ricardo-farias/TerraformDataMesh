@@ -22,7 +22,7 @@ resource "null_resource" "lakeFormation" {
   provisioner "local-exec" {
     # TODO refactor venv out of setup. put correct python version inside docker image
     command = <<EOT
-      source ../venv/bin/activate
+      source ~/.pyenv/versions/DataMeshPoc/bin/activate
       pip3 install boto3
       python3 ../lakeFormation/LakeFormationController.py create $PARAMS
       deactivate
@@ -47,7 +47,7 @@ resource "null_resource" "lakeFormation" {
     when    = destroy
     # TODO refactor venv out of setup. put correct python version inside docker image
     command = <<EOT
-      source ../venv/bin/activate
+      source ~/.pyenv/versions/DataMeshPoc/bin/activate
       pip3 install boto3
       python3 ../lakeFormation/LakeFormationController.py destroy $PARAMS
       deactivate
